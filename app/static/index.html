@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sovereign Lens</title>
+<meta name="description" content="世界の政府系ファンドが買った日本株を追跡し、あなたの資産に合わせた投資戦略を自律エージェントが組み立てます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">◎</span>
+      <div>
+        <h1>Sovereign Lens</h1>
+        <p class="tag">世界の政府系ファンドが選んだ日本株を、あなたの資産サイズで。</p>
+      </div>
+    </div>
+    <div class="status" id="status">接続確認中…</div>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <aside class="panel form-panel">
+    <h2>あなたの条件</h2>
+    <form id="profile">
+      <label class="field">
+        <span>投資に回せる金額</span>
+        <div class="amount"><input id="amount" type="number" min="10000" step="10000" value="3000000" required><em>円</em></div>
+        <div class="chips" id="presets">
+          <button type="button" data-v="300000">30万</button>
+          <button type="button" data-v="1000000">100万</button>
+          <button type="button" data-v="3000000">300万</button>
+          <button type="button" data-v="10000000">1,000万</button>
+          <button type="button" data-v="50000000">5,000万</button>
+        </div>
+      </label>
+      <fieldset class="field">
+        <span>リスク許容度</span>
+        <div class="seg">
+          <label><input type="radio" name="risk" value="conservative"><b>安定重視</b><small>大型株のみ・1銘柄8%まで</small></label>
+          <label><input type="radio" name="risk" value="balanced" checked><b>バランス</b><small>大型＋中型・12%まで</small></label>
+          <label><input type="radio" name="risk" value="aggressive"><b>積極運用</b><small>小型株も・18%まで</small></label>
+        </div>
+      </fieldset>
+      <label class="field">
+        <span>投資期間 <output id="hzOut">10</output>年</span>
+        <input id="horizon" type="range" min="1" max="30" value="10">
+      </label>
+      <label class="field check"><input id="nisa" type="checkbox" checked> NISAを利用する</label>
+      <label class="field">
+        <span>除外したい銘柄コード（任意）</span>
+        <input id="exclude" type="text" placeholder="例: 9697, 3659">
+      </label>
+      <label class="field">
+        <span>エージェントへの補足（任意）</span>
+        <textarea id="note" rows="2" maxlength="500" placeholder="例: ゲーム株に偏りすぎないようにしたい"></textarea>
+      </label>
+      <button class="primary" type="submit" id="runBtn">エージェントに戦略を組ませる</button>
+      <p class="fine">発注は行いません。プランは人が確認・承認してから、ご自身の証券口座で実行する設計です。</p>
+    </form>
+  </aside>
+
+  <section class="content">
+    <nav class="tabs" role="tablist">
+      <button role="tab" class="on" data-tab="plan">戦略</button>
+      <button role="tab" data-tab="stocks">SWF保有銘柄</button>
+      <button role="tab" data-tab="funds">追跡ファンド</button>
+      <button role="tab" data-tab="nbim">NBIMライブ</button>
+      <button role="tab" data-tab="ask">質問する</button>
+    </nav>
+
+    <div class="tab on" id="tab-plan">
+      <div class="panel" id="planEmpty">
+        <h2>まずは条件を入れて実行</h2>
+        <p>エージェントは次の順で<b>自分で判断しながら</b>進めます。進行状況は右のトレースに表示します。</p>
+        <ol class="flow">
+          <li><b>収集</b>　EDINETの大量保有報告書と、NBIMの全保有銘柄データから政府系ファンドの日本株を集める</li>
+          <li><b>採点</b>　保有比率・複数ファンドの重なり・保有期間・直近の売買・取得コストとの比較で採点（Sovereign Conviction Score）</li>
+          <li><b>理由調査</b>　Google検索で「なぜそのファンドが買ったのか」を出典付きで調べる</li>
+          <li><b>配分設計</b>　あなたの金額・リスクに合わせて、株数と買い方まで計算（上限ルールはコードで強制）</li>
+          <li><b>独立審査</b>　別のエージェントが集中リスクや表現をチェックし、必要なら作り直す</li>
+        </ol>
+      </div>
+      <div id="planView" hidden>
+        <div class="panel">
+          <div class="plan-head">
+            <h2>配分案 <small id="planMeta"></small></h2>
+            <span class="badge" id="checkBadge"></span>
+          </div>
+          <div class="allocbar" id="allocBar"></div>
+          <div class="alloclegend" id="allocLegend"></div>
+          <div class="tablewrap"><table class="grid" id="posTable"></table></div>
+          <ul class="checks" id="checks"></ul>
+          <ul class="warns" id="warns"></ul>
+          <div class="approve">
+            <button class="secondary" id="approveBtn" disabled>内容を確認した（発注メモをCSVで保存）</button>
+            <span class="fine" id="disclaimer"></span>
+          </div>
+        </div>
+        <div class="two">
+          <div class="panel report">
+            <h2>エージェントのレポート</h2>
+            <div id="report" class="md"><p class="muted">エージェントの実行を待っています…</p></div>
+          </div>
+          <div class="panel trace">
+            <h2>エージェント・トレース</h2>
+            <ol id="trace"></ol>
+            <div class="fine" id="traceFoot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-stocks">
+      <div class="panel">
+        <div class="plan-head"><h2>政府系ファンドが保有する日本株</h2><small class="muted" id="asOf"></small></div>
+        <p class="fine">推定取得単価＝大量保有報告書の「取得資金合計÷保有株数」（株式分割調整後）。約定単価ではありません。行をクリックで詳細。</p>
+        <div class="tablewrap"><table class="grid hover" id="uniTable"></table></div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-funds"><div class="cards" id="fundCards"></div></div>
+
+    <div class="tab" id="tab-nbim">
+      <div class="panel">
+        <div class="plan-head"><h2>ノルウェー政府年金基金（NBIM）日本株 上位保有</h2><button class="secondary" id="nbimBtn">最新データを取得</button></div>
+        <p class="fine">NBIMの公開API（www.nbim.no/api/investments/v2）から取得。初保有年は1998・2005・2010・2015・2020年末の保有一覧から推定。</p>
+        <div id="nbimOut" class="tablewrap"></div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-ask">
+      <div class="panel">
+        <h2>エージェントに質問</h2>
+        <div class="chips" id="examples">
+          <button type="button">サウジPIFが日本のゲーム株を買った理由は？</button>
+          <button type="button">GICが住友ベークライトを買った理由と取得コストは？</button>
+          <button type="button">複数の政府系ファンドが同時に持っている銘柄は？</button>
+          <button type="button">直近1週間で政府系ファンドの新しい大量保有報告はある？</button>
+        </div>
+        <form id="askForm" class="ask"><input id="askInput" maxlength="2000" placeholder="例：ノルウェー銀行が資生堂を5%超まで買い増した背景は？"><button class="primary">送信</button></form>
+        <div class="two">
+          <div id="askOut" class="md"></div>
+          <ol id="askTrace" class="trace-list"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dossier"><div id="dossierBody"></div><form method="dialog"><button class="secondary">閉じる</button></form></dialog>
+
+<footer class="wrap foot">
+  データ出典：EDINET（金融庁）大量保有報告書、Norges Bank Investment Management 公開データ、各社開示・報道。本サービスは情報提供のみを目的とし、投資助言・勧誘ではありません。
+</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

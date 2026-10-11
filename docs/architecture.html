@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>Sovereign Lens Architecture</title>
+<style>
+body{margin:0;background:#f6f3ec;font-family:"Noto Sans CJK JP","Noto Sans JP",sans-serif;color:#1c1f24}
+.c{width:1600px;height:900px;position:relative;padding:28px 36px;box-sizing:border-box}
+h1{font-family:"Noto Serif CJK JP",serif;margin:0;font-size:30px}
+.sub{color:#6b6f76;font-size:15px;margin:4px 0 0}
+.box{position:absolute;background:#fffdf8;border:1.5px solid #cfc8b8;border-radius:12px;padding:12px 14px;box-sizing:border-box;font-size:14px;line-height:1.45}
+.box h3{margin:0 0 6px;font-size:16px}
+.gcp{position:absolute;border:2px dashed #0f5c56;border-radius:16px;background:rgba(15,92,86,.04)}
+.gcp>span{position:absolute;top:-13px;left:18px;background:#f6f3ec;padding:0 8px;color:#0f5c56;font-weight:700}
+.agent{border-color:#0f5c56;background:#eef6f4}
+.llm{border-color:#b0862b;background:#fbf5e6}
+.ext{border-color:#9a9ea5;background:#fff}
+.guard{border-color:#a4471d;background:#fbefe9}
+.pill{display:inline-block;font-size:11.5px;border:1px solid #cfc8b8;border-radius:5px;padding:0 6px;margin:2px 2px 0 0;background:#fff}
+svg{position:absolute;inset:0;pointer-events:none}
+small{color:#6b6f76}
+</style></head><body><div class="c">
+<h1>Sovereign Lens — システムアーキテクチャ</h1>
+<p class="sub">政府系ファンドの日本株保有を自律的に収集・採点・理由調査し、利用者の資産に合わせた配分案を作るマルチエージェント（ADK + Gemini on Cloud Run）</p>
+
+<div class="box" style="left:36px;top:130px;width:190px;height:150px"><h3>利用者</h3>ブラウザ（PC/スマホ）<br>金額・リスク・期間を入力<br><small>プランを確認・承認し、発注は自分の証券口座で</small></div>
+
+<div class="gcp" style="left:262px;top:110px;width:1010px;height:760px"><span>Google Cloud（asia-northeast1）</span></div>
+
+<div class="box" style="left:290px;top:135px;width:300px;height:170px"><h3>Cloud Run：FastAPI</h3>
+<span class="pill">Web UI（静的）</span><span class="pill">REST API</span><span class="pill">SSEストリーム</span><br>
+入力検証（Pydantic）・レート制限（IP毎 8回/10分）・即時試算 API（LLM不要）</div>
+
+<div class="box guard" style="left:290px;top:325px;width:300px;height:200px"><h3>ガバナンス層（ADK Plugin）</h3>
+・プロンプトインジェクション検知<br>・ツール許可リスト／1実行30回までの予算<br>・全ツール呼び出しを構造化監査ログに記録<br>・発注・認証情報の要求をブロック<br>・人による承認が前提（発注機能なし）</div>
+
+<div class="box agent" style="left:640px;top:135px;width:300px;height:205px"><h3>オーケストレーター（LlmAgent）</h3>
+Gemini（Vertex AI）<br>収集→採点→理由調査→配分→審査を<b>自分で判断して</b>進め、審査で指摘があれば除外銘柄を調整して作り直す</div>
+
+<div class="box llm" style="left:975px;top:135px;width:270px;height:120px"><h3>理由調査エージェント</h3>Gemini + <b>Google検索グラウンディング</b><br>事実と推測を分け、出典を付けて要約</div>
+<div class="box llm" style="left:975px;top:275px;width:270px;height:110px"><h3>審査エージェント（独立）</h3>集中リスク・情報の鮮度・断定表現を審査し、承認可／修正推奨を返す</div>
+
+<div class="box agent" style="left:640px;top:370px;width:300px;height:250px"><h3>ツール群（Function Tools）</h3>
+<span class="pill">rank_swf_conviction_stocks</span><span class="pill">get_stock_dossier</span><span class="pill">get_investor_holdings</span><span class="pill">scan_new_swf_filings</span><span class="pill">get_nbim_live_japan_holdings</span><span class="pill">build_investment_strategy</span>
+<p style="margin:8px 0 0"><b>Sovereign Conviction Score</b><br>保有比率30＋複数ファンド20＋保有期間20＋直近売買15＋取得コスト比15</p></div>
+
+<div class="box" style="left:975px;top:410px;width:270px;height:210px"><h3>戦略エンジン（決定論的）</h3>コア（TOPIX）＋SWF追随の個別株＋現金<br>1銘柄・1業種の上限、現金の下限、規模フィルタを<b>コードで強制</b><br>単元株と単元未満株の自動判定、分割購入プラン</div>
+
+<div class="box" style="left:290px;top:560px;width:300px;height:150px"><h3>可観測性</h3>Cloud Trace（OpenTelemetry：エージェント・LLM・ツールのスパン）<br>Cloud Logging（監査ログ・トークン数）<br>UIのリアルタイムトレース表示</div>
+<div class="box" style="left:640px;top:650px;width:300px;height:100px"><h3>Secret Manager ／ IAM</h3>EDINET APIキーは Secret に保管<br>実行用サービスアカウントは最小権限</div>
+<div class="box" style="left:975px;top:650px;width:270px;height:115px"><h3>検証済みシードデータ</h3>政府系ファンド保有43件（出典URL付き）<br>APIが落ちても動作を継続</div>
+
+<div class="box ext" style="left:1310px;top:135px;width:255px;height:115px"><h3>EDINET API v2（金融庁）</h3>大量保有報告書・変更報告書<br>（docType 350/360）のCSVから保有比率と取得資金を抽出</div>
+<div class="box ext" style="left:1310px;top:275px;width:255px;height:110px"><h3>NBIM 公開API</h3>ノルウェー政府年金基金の全保有銘柄（半期）。1998年からの履歴で保有期間を推定</div>
+<div class="box ext" style="left:1310px;top:410px;width:255px;height:85px"><h3>株価データ</h3>Yahoo Finance → Stooq（自動切替）</div>
+<div class="box ext" style="left:1310px;top:520px;width:255px;height:85px"><h3>Google 検索</h3>企業IR・報道・ファンドの年次報告</div>
+
+<svg viewBox="0 0 1600 900"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#55595f"/></marker></defs>
+<g stroke="#55595f" stroke-width="1.8" fill="none" marker-end="url(#a)">
+<path d="M226 205 H288"/><path d="M590 220 H638"/><path d="M440 305 V323"/>
+<path d="M940 190 H973"/><path d="M940 300 H973"/><path d="M790 340 V368"/>
+<path d="M940 500 H973"/><path d="M940 397 H1282 V190 H1308"/><path d="M1282 330 H1308"/><path d="M1282 397 V455 H1308"/><path d="M1245 220 C1280 220 1280 560 1308 560"/>
+<path d="M590 450 C615 450 615 520 638 520" stroke-dasharray="5 4"/><path d="M640 600 C610 600 610 630 592 630" stroke-dasharray="5 4"/>
+</g></svg>
+</div></body></html>

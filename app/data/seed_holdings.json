@@ -1,0 +1,949 @@
+{
+ "as_of": "2026-10-11",
+ "note": "EDINET大量保有報告書（およびミラーサイト ufocatch / maonline）と NBIM 公開データ・二次情報から手作業で検証したシードデータ。est_cost_jpy は『取得資金合計 ÷ 保有株数（株式分割調整後）』による推定値で、報告書に記載された約定単価ではない。不明値は null。",
+ "investors": [
+  {
+   "id": "pif",
+   "name_ja": "サウジアラビア公共投資基金（PIF）グループ",
+   "name_en": "Public Investment Fund (incl. Ayar First Investment Co.)",
+   "country": "サウジアラビア",
+   "type": "政府系ファンド",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "パブリック・インベストメント・ファンド",
+    "Public Investment Fund",
+    "アヤル・ファースト",
+    "Ayar First"
+   ],
+   "profile": "運用資産約9,000億ドル超とされる中東最大級のSWF。2022年からゲーム・コンテンツ企業へ集中投資し、2026年1月に保有株を子会社Ayar（Savvy Games系とみられる）へ無対価で集約。",
+   "short": "サウジPIF"
+  },
+  {
+   "id": "gic",
+   "name_ja": "GIC（シンガポール政府投資公社）",
+   "name_en": "GIC Private Limited",
+   "country": "シンガポール",
+   "type": "政府系ファンド",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "GIC",
+    "ガバメント・オブ・シンガポール"
+   ],
+   "profile": "シンガポール政府の外貨準備を運用。長期・バリュー志向で、素材・電子部品などのミッドキャップに5%超で入ることがある。",
+   "short": "シンガポールGIC"
+  },
+  {
+   "id": "nbim",
+   "name_ja": "ノルウェー政府年金基金グローバル（NBIM／ノルウェー銀行）",
+   "name_en": "Norges Bank Investment Management",
+   "country": "ノルウェー",
+   "type": "政府系ファンド",
+   "disclosure": "全保有銘柄を半期ごとに公開（JSON API）＋EDINET 大量保有報告書",
+   "edinet_filer_keywords": [
+    "ノルウェー銀行",
+    "Norges Bank"
+   ],
+   "profile": "運用資産約2兆ドル規模の世界最大のSWF。日本株は約1,400社・1,100億ドル超（2026年6月末）を保有。1998年から日本株に投資。",
+   "short": "ノルウェーNBIM"
+  },
+  {
+   "id": "egdc",
+   "name_ja": "Electronic Gaming Development Co.（サウジ系）",
+   "name_en": "Electronic Gaming Development Company",
+   "country": "サウジアラビア",
+   "type": "準政府系（MiSK財団系と報道）",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "エレクトロニック・ゲーミング",
+    "Electronic Gaming Development"
+   ],
+   "profile": "ムハンマド皇太子系のMiSK財団傘下と報道されるサウジ系投資会社。2026年3月にカプコン株5%超を取得。",
+   "short": "サウジEGDC"
+  },
+  {
+   "id": "qia",
+   "name_ja": "カタール投資庁（QIA）",
+   "name_en": "Qatar Investment Authority",
+   "country": "カタール",
+   "type": "政府系ファンド",
+   "disclosure": "報道ベース（5%未満）",
+   "edinet_filer_keywords": [
+    "カタール投資庁",
+    "Qatar Investment Authority"
+   ],
+   "profile": "2023年にKOKUSAI ELECTRICへ上場前出資。2025年11月にオリックスと25億ドルの日本株ファンドを設立。",
+   "short": "カタールQIA"
+  },
+  {
+   "id": "temasek",
+   "name_ja": "テマセク",
+   "name_en": "Temasek",
+   "country": "シンガポール",
+   "type": "政府系ファンド",
+   "disclosure": "監視対象（現時点で5%超報告なし）",
+   "edinet_filer_keywords": [
+    "テマセク",
+    "Temasek"
+   ],
+   "profile": "EDINETで5%超の報告は確認されていない。新規報告をエージェントが監視。",
+   "short": "テマセク"
+  },
+  {
+   "id": "adia",
+   "name_ja": "アブダビ投資庁（ADIA）",
+   "name_en": "Abu Dhabi Investment Authority",
+   "country": "UAE",
+   "type": "政府系ファンド",
+   "disclosure": "監視対象（現時点で5%超報告なし）",
+   "edinet_filer_keywords": [
+    "アブダビ投資庁",
+    "Abu Dhabi Investment Authority"
+   ],
+   "profile": "EDINETで5%超の報告は確認されていない。新規報告をエージェントが監視。",
+   "short": "アブダビADIA"
+  },
+  {
+   "id": "kia",
+   "name_ja": "クウェート投資庁（KIA）",
+   "name_en": "Kuwait Investment Authority",
+   "country": "クウェート",
+   "type": "政府系ファンド",
+   "disclosure": "監視対象（現時点で5%超報告なし）",
+   "edinet_filer_keywords": [
+    "クウェート投資庁",
+    "Kuwait Investment Authority"
+   ],
+   "profile": "EDINETで5%超の報告は確認されていない。新規報告をエージェントが監視。",
+   "short": "クウェートKIA"
+  },
+  {
+   "id": "mubadala",
+   "name_ja": "ムバダラ",
+   "name_en": "Mubadala Investment Company",
+   "country": "UAE",
+   "type": "政府系ファンド",
+   "disclosure": "監視対象（現時点で5%超報告なし）",
+   "edinet_filer_keywords": [
+    "ムバダラ",
+    "Mubadala"
+   ],
+   "profile": "EDINETで5%超の報告は確認されていない。新規報告をエージェントが監視。",
+   "short": "ムバダラ"
+  }
+ ],
+ "holdings": [
+  {
+   "investor_id": "pif",
+   "entity": "Public Investment Fund",
+   "code": "7974",
+   "name_ja": "任天堂",
+   "name_en": "Nintendo",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 4.19,
+   "peak_pct": 8.58,
+   "shares": 54462300,
+   "est_cost_jpy": 6025,
+   "cost_basis_note": "2023年2月の訂正報告：自己資金5,862.9億円÷97,307,900株（10:1分割後）",
+   "first_seen": "2022-05-18",
+   "latest_report": "2024-12-26",
+   "status": "reduced",
+   "history": "5.01→5.16→6.20→7.49→8.58%（2023/2）→7.54→6.29→5.26→4.19%（2024/12）",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E36234/7974",
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100UVQZ.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.（PIFから移管）",
+   "code": "9697",
+   "name_ja": "カプコン",
+   "name_en": "Capcom",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 6.6,
+   "peak_pct": 6.6,
+   "shares": 35188800,
+   "est_cost_jpy": 1505,
+   "cost_basis_note": "PIF時代：529.7億円÷17,594,400株＝3,010円（2024年2:1分割後 約1,505円）。Ayarへは無対価で移管",
+   "first_seen": "2022-02-04",
+   "latest_report": "2026-01-09",
+   "status": "holding",
+   "history": "PIFが2022/2に5%超→2026/1にAyarへグループ内移管",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XEMM.pdf",
+    "https://ufocatch.com/large-shareholding/holding/E36234/9697/S100QVNO"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.（PIFから移管）",
+   "code": "3659",
+   "name_ja": "ネクソン",
+   "name_en": "Nexon",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 10.71,
+   "peak_pct": 10.71,
+   "shares": 88548900,
+   "est_cost_jpy": 3005,
+   "cost_basis_note": "PIF時代：自己資金2,661.3億円÷88,548,900株",
+   "first_seen": "2022-02-03",
+   "latest_report": "2026-01-09",
+   "status": "holding",
+   "history": "PIFが2022/2に5%超→最大10.23%→2026/1にAyarへ移管（10.71%）",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XETQ.pdf",
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100QVNY.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.（PIFから移管）",
+   "code": "3635",
+   "name_ja": "コーエーテクモホールディングス",
+   "name_en": "Koei Tecmo Holdings",
+   "sector": "ゲーム・エンタメ",
+   "size": "mid",
+   "ownership_pct": 9.3,
+   "peak_pct": 9.3,
+   "shares": 31267360,
+   "est_cost_jpy": 2111,
+   "cost_basis_note": "PIF時代：自己資金636.0億円÷30,133,160株（株式分割による無償取得分を含む）",
+   "first_seen": "2022-03-11",
+   "latest_report": "2026-01-09",
+   "status": "holding",
+   "history": "PIFが2022/3に5%超→最大8.97%→2026/1にAyarへ移管（9.30%）",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XENS.pdf",
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100SZXP.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.（PIFから移管）",
+   "code": "9605",
+   "name_ja": "東映",
+   "name_en": "Toei",
+   "sector": "ゲーム・エンタメ",
+   "size": "mid",
+   "ownership_pct": 6.31,
+   "peak_pct": 6.31,
+   "shares": 4662500,
+   "est_cost_jpy": 3771,
+   "cost_basis_note": "PIF時代：168.1億円÷891,300株＝18,856円（2024年5:1分割後 約3,771円）",
+   "first_seen": "2022-04-19",
+   "latest_report": "2026-01-09",
+   "status": "holding",
+   "history": "PIFが2022/4に5%超→2026/1にAyarへ移管（6.31%）",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XEVA.pdf",
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100QB91.pdf"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.",
+   "code": "9684",
+   "name_ja": "スクウェア・エニックス・ホールディングス",
+   "name_en": "Square Enix Holdings",
+   "sector": "ゲーム・エンタメ",
+   "size": "mid",
+   "ownership_pct": 9.64,
+   "peak_pct": 9.64,
+   "shares": 35430000,
+   "est_cost_jpy": 1512,
+   "cost_basis_note": "Ayar自己保有分：自己資金292.5億円÷19,344,900株（3:1分割後）。PIFからの1,608万株は無対価移管",
+   "first_seen": "2022-09-26",
+   "latest_report": "2026-01-09",
+   "status": "increased",
+   "history": "Ayar 5.26%＋PIF 4.38% → 2026/1に統合し9.64%",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XEYQ.pdf",
+    "https://ufocatch.com/large-shareholding/holding/E33636/9684"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "pif",
+   "entity": "Ayar First Investment Co.",
+   "code": "7832",
+   "name_ja": "バンダイナムコホールディングス",
+   "name_en": "Bandai Namco Holdings",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 5.05,
+   "peak_pct": 5.05,
+   "shares": 32837100,
+   "est_cost_jpy": null,
+   "cost_basis_note": "グループ内移管のため報告書上の単価は0。取得原価は非開示",
+   "first_seen": "2026-01-09",
+   "latest_report": "2026-01-09",
+   "status": "new",
+   "history": "2026/1に初の5%超報告（5.05%）",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XETG.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "egdc",
+   "entity": "Electronic Gaming Development Co.",
+   "code": "9697",
+   "name_ja": "カプコン",
+   "name_en": "Capcom",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 6.04,
+   "peak_pct": 6.04,
+   "shares": 32186900,
+   "est_cost_jpy": 3809,
+   "cost_basis_note": "取得資金1,226.0億円÷保有株数",
+   "first_seen": "2026-03-13",
+   "latest_report": "2026-04-06",
+   "status": "increased",
+   "history": "2026/3に5%超→2026/4に6.04%へ買い増し（サウジ系合計で12%超）",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E37324/9697"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "gic",
+   "entity": "GIC Private Limited",
+   "code": "4203",
+   "name_ja": "住友ベークライト",
+   "name_en": "Sumitomo Bakelite",
+   "sector": "化学・素材",
+   "size": "mid",
+   "ownership_pct": 5.96,
+   "peak_pct": 8.02,
+   "shares": 5262578,
+   "est_cost_jpy": 3434,
+   "cost_basis_note": "取得資金180.7億円÷保有株数",
+   "first_seen": "2024-09-25",
+   "latest_report": "2026-05-22",
+   "status": "reduced",
+   "history": "2024/9に5%超→最大8.02%→2026/5に5.96%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12389/4203"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "gic",
+   "entity": "GIC Private Limited",
+   "code": "4062",
+   "name_ja": "イビデン",
+   "name_en": "Ibiden",
+   "sector": "電子部品・半導体",
+   "size": "large",
+   "ownership_pct": 3.8,
+   "peak_pct": 5.08,
+   "shares": 10693100,
+   "est_cost_jpy": 4215,
+   "cost_basis_note": "取得資金450.7億円÷保有株数",
+   "first_seen": "2024-06-19",
+   "latest_report": "2026-03-04",
+   "status": "reduced",
+   "history": "5.08%（2024/6）→4.06→再び5.07%（2025/12）→3.80%（2026/3）",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12389/4062"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "gic",
+   "entity": "GIC Private Limited",
+   "code": "2229",
+   "name_ja": "カルビー",
+   "name_en": "Calbee",
+   "sector": "食品",
+   "size": "mid",
+   "ownership_pct": 4.08,
+   "peak_pct": null,
+   "shares": 5459000,
+   "est_cost_jpy": 2774,
+   "cost_basis_note": "取得資金151.4億円÷保有株数（2023年時点）",
+   "first_seen": "2022-02-24",
+   "latest_report": "2023-02-14",
+   "status": "reduced",
+   "history": "2022/2に5%超→2023/2に4.08%（以降は報告義務なし）",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12389/2229"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "gic",
+   "entity": "GIC Private Limited",
+   "code": "7732",
+   "name_ja": "トプコン",
+   "name_en": "Topcon",
+   "sector": "精密機器",
+   "size": "mid",
+   "ownership_pct": 3.11,
+   "peak_pct": null,
+   "shares": 3365875,
+   "est_cost_jpy": 1624,
+   "cost_basis_note": "取得資金54.6億円÷保有株数",
+   "first_seen": "2024-04-15",
+   "latest_report": "2025-01-24",
+   "status": "exited",
+   "history": "非公開化（TOB）対象となったため投資候補から除外",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12389/7732"
+   ],
+   "confidence": "low"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "4911",
+   "name_ja": "資生堂",
+   "name_en": "Shiseido",
+   "sector": "化粧品・日用品",
+   "size": "large",
+   "ownership_pct": 5.34,
+   "peak_pct": 6.71,
+   "shares": 21355353,
+   "est_cost_jpy": null,
+   "cost_basis_note": "ノルウェー銀行の取得資金は貸株等の回転を含む累計値のため単価推定に不適",
+   "first_seen": "1998-12-31",
+   "latest_report": "2026-09-10",
+   "status": "holding",
+   "history": "1998年から保有。2024/7に5%超→最大6.71%→2026/9に5.34%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12097/4911",
+    "https://finance.matsui.co.jp/news/617660/index"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "215A",
+   "name_ja": "タイミー",
+   "name_en": "Timee",
+   "sector": "人材・サービス",
+   "size": "small",
+   "ownership_pct": 5.04,
+   "peak_pct": 5.04,
+   "shares": 5079300,
+   "est_cost_jpy": 1458,
+   "cost_basis_note": "取得資金74.1億円÷保有株数",
+   "first_seen": "2026-09-15",
+   "latest_report": "2026-09-18",
+   "status": "new",
+   "history": "2026/9に新規5%超",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12097/215A",
+    "https://finance.matsui.co.jp/news/620478/index"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "8630",
+   "name_ja": "SOMPOホールディングス",
+   "name_en": "SOMPO Holdings",
+   "sector": "保険",
+   "size": "large",
+   "ownership_pct": 5.0,
+   "peak_pct": 5.57,
+   "shares": 16505077,
+   "est_cost_jpy": null,
+   "cost_basis_note": "取得資金は累計値のため単価推定に不適",
+   "first_seen": "1998-12-31",
+   "latest_report": "2024-03-19",
+   "status": "holding",
+   "history": "1998年から保有（前身の安田火災・日産火災時代）。2020/1に5%超",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12097/8630",
+    "https://www.kabutore.biz/genzaikabuka/tairyohoyu.html?code=8630"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "7270",
+   "name_ja": "SUBARU",
+   "name_en": "Subaru",
+   "sector": "自動車",
+   "size": "large",
+   "ownership_pct": 4.33,
+   "peak_pct": 5.04,
+   "shares": 31026791,
+   "est_cost_jpy": null,
+   "cost_basis_note": "取得資金は累計値のため単価推定に不適",
+   "first_seen": "1998-12-31",
+   "latest_report": "2026-02-18",
+   "status": "reduced",
+   "history": "1998年から保有（富士重工業）。2025/12に5.04%→2026/2に4.33%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holding/E12097/7270"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "8088",
+   "name_ja": "岩谷産業",
+   "name_en": "Iwatani",
+   "sector": "エネルギー",
+   "size": "mid",
+   "ownership_pct": 4.63,
+   "peak_pct": null,
+   "shares": null,
+   "est_cost_jpy": null,
+   "cost_basis_note": null,
+   "first_seen": null,
+   "latest_report": "2024-03-25",
+   "status": "reduced",
+   "history": "5%超→2024/3に4.63%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E12097"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "8771",
+   "name_ja": "イー・ギャランティ",
+   "name_en": "eGuarantee",
+   "sector": "金融サービス",
+   "size": "small",
+   "ownership_pct": 4.22,
+   "peak_pct": null,
+   "shares": null,
+   "est_cost_jpy": null,
+   "cost_basis_note": null,
+   "first_seen": null,
+   "latest_report": "2025-03-25",
+   "status": "reduced",
+   "history": "5%超→2025/3に4.22%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E12097"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "Norges Bank",
+   "code": "6284",
+   "name_ja": "日精エー・エス・ビー機械",
+   "name_en": "Nissei ASB Machine",
+   "sector": "機械",
+   "size": "small",
+   "ownership_pct": 3.95,
+   "peak_pct": null,
+   "shares": null,
+   "est_cost_jpy": null,
+   "cost_basis_note": null,
+   "first_seen": null,
+   "latest_report": "2025-04-14",
+   "status": "reduced",
+   "history": "5%超→2025/4に3.95%",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E12097"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "6501",
+   "name_ja": "日立製作所",
+   "name_en": "Hitachi",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 2.71,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/capital-goods/tse-6501/hitachi-shares/ownership",
+    "https://www.nbim.no/en/investments/all-investments/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "4063",
+   "name_ja": "信越化学工業",
+   "name_en": "Shin-Etsu Chemical",
+   "sector": "化学・素材",
+   "size": "large",
+   "ownership_pct": 2.43,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/materials/tse-4063/shin-etsu-chemical-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "6758",
+   "name_ja": "ソニーグループ",
+   "name_en": "Sony Group",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 2.22,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/consumer-durables/tse-6758/sony-group-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "7974",
+   "name_ja": "任天堂",
+   "name_en": "Nintendo",
+   "sector": "ゲーム・エンタメ",
+   "size": "large",
+   "ownership_pct": 1.92,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/media/tse-7974/nintendo-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8411",
+   "name_ja": "みずほフィナンシャルグループ",
+   "name_en": "Mizuho Financial Group",
+   "sector": "銀行",
+   "size": "large",
+   "ownership_pct": 1.88,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/banks/tse-8411/mizuho-financial-group-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "6098",
+   "name_ja": "リクルートホールディングス",
+   "name_en": "Recruit Holdings",
+   "sector": "人材・サービス",
+   "size": "large",
+   "ownership_pct": 1.83,
+   "first_seen": "2014-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/commercial-services/tse-6098/recruit-holdings-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8316",
+   "name_ja": "三井住友フィナンシャルグループ",
+   "name_en": "Sumitomo Mitsui Financial Group",
+   "sector": "銀行",
+   "size": "large",
+   "ownership_pct": 1.77,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/banks/tse-8316/sumitomo-mitsui-financial-group-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8306",
+   "name_ja": "三菱UFJフィナンシャル・グループ",
+   "name_en": "Mitsubishi UFJ Financial Group",
+   "sector": "銀行",
+   "size": "large",
+   "ownership_pct": 1.76,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/banks/tse-8306/mitsubishi-ufj-financial-group-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "6857",
+   "name_ja": "アドバンテスト",
+   "name_en": "Advantest",
+   "sector": "電子部品・半導体",
+   "size": "large",
+   "ownership_pct": 1.74,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/semiconductors/tse-6857/advantest-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "6861",
+   "name_ja": "キーエンス",
+   "name_en": "Keyence",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 1.69,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/tech/tse-6861/keyence-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8766",
+   "name_ja": "東京海上ホールディングス",
+   "name_en": "Tokio Marine Holdings",
+   "sector": "保険",
+   "size": "large",
+   "ownership_pct": 1.56,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/insurance/tse-8766/tokio-marine-holdings-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8035",
+   "name_ja": "東京エレクトロン",
+   "name_en": "Tokyo Electron",
+   "sector": "電子部品・半導体",
+   "size": "large",
+   "ownership_pct": 1.55,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/semiconductors/tse-8035/tokyo-electron-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "7011",
+   "name_ja": "三菱重工業",
+   "name_en": "Mitsubishi Heavy Industries",
+   "sector": "機械",
+   "size": "large",
+   "ownership_pct": 1.55,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/capital-goods/tse-7011/mitsubishi-heavy-industries-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "7203",
+   "name_ja": "トヨタ自動車",
+   "name_en": "Toyota Motor",
+   "sector": "自動車",
+   "size": "large",
+   "ownership_pct": 1.54,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/automobiles/tse-7203/toyota-motor-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "4568",
+   "name_ja": "第一三共",
+   "name_en": "Daiichi Sankyo",
+   "sector": "医薬品",
+   "size": "large",
+   "ownership_pct": 1.54,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/pharmaceuticals-biotech/tse-4568/daiichi-sankyo-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8031",
+   "name_ja": "三井物産",
+   "name_en": "Mitsui & Co",
+   "sector": "商社",
+   "size": "large",
+   "ownership_pct": 1.47,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/capital-goods/tse-8031/mitsui-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "8058",
+   "name_ja": "三菱商事",
+   "name_en": "Mitsubishi Corp",
+   "sector": "商社",
+   "size": "large",
+   "ownership_pct": 1.43,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/capital-goods/tse-8058/mitsubishi-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "9433",
+   "name_ja": "KDDI",
+   "name_en": "KDDI",
+   "sector": "通信",
+   "size": "large",
+   "ownership_pct": 1.36,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/telecom/tse-9433/kddi-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "4502",
+   "name_ja": "武田薬品工業",
+   "name_en": "Takeda Pharmaceutical",
+   "sector": "医薬品",
+   "size": "large",
+   "ownership_pct": 1.29,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/pharmaceuticals-biotech/tse-4502/takeda-pharmaceutical-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "7267",
+   "name_ja": "本田技研工業",
+   "name_en": "Honda Motor",
+   "sector": "自動車",
+   "size": "large",
+   "ownership_pct": 1.2,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/automobiles/tse-7267/honda-motor-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "4503",
+   "name_ja": "アステラス製薬",
+   "name_en": "Astellas Pharma",
+   "sector": "医薬品",
+   "size": "large",
+   "ownership_pct": 1.03,
+   "first_seen": "1998-12-31",
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/pharmaceuticals-biotech/tse-4503/astellas-pharma-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "9984",
+   "name_ja": "ソフトバンクグループ",
+   "name_en": "SoftBank Group",
+   "sector": "通信",
+   "size": "large",
+   "ownership_pct": 1.0,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/telecom/tse-9984/softbank-group-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "nbim",
+   "entity": "NBIM（全保有公開）",
+   "code": "9983",
+   "name_ja": "ファーストリテイリング",
+   "name_en": "Fast Retailing",
+   "sector": "小売",
+   "size": "large",
+   "ownership_pct": 0.89,
+   "first_seen": null,
+   "status": "holding",
+   "sources": [
+    "https://simplywall.st/stocks/jp/retail/tse-9983/fast-retailing-shares/ownership"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "qia",
+   "entity": "Qatar Investment Authority",
+   "code": "6525",
+   "name_ja": "KOKUSAI ELECTRIC",
+   "name_en": "Kokusai Electric",
+   "sector": "電子部品・半導体",
+   "size": "large",
+   "ownership_pct": null,
+   "first_seen": "2023-06-01",
+   "status": "holding",
+   "history": "上場前の2023年6月にKKRから少数株を取得（規模非開示）",
+   "sources": [
+    "https://www.avcj.com/avcj/news/3029491/kkr-sells-minority-stake-in-japans-kokusai-to-qia"
+   ],
+   "confidence": "low"
+  }
+ ]
+}
