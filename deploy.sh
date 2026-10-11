@@ -44,7 +44,7 @@ fi
 
 echo "==> Deploying to Cloud Run"
 gcloud run deploy "${SERVICE}" \
-  --source . \
+  --source . --quiet \
   --region "${REGION}" \
   --service-account "${SA}" \
   --allow-unauthenticated \
