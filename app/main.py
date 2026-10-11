@@ -82,7 +82,7 @@ def _get_runner():
         adk_app = App(
             name=APP_NAME,
             root_agent=root_agent,
-            plugins=[GovernancePlugin(ALLOWED_TOOLS, max_tool_calls=int(os.environ.get("MAX_TOOL_CALLS", "30")))],
+            plugins=[GovernancePlugin(ALLOWED_TOOLS, max_tool_calls=int(os.environ.get("MAX_TOOL_CALLS", "30")), per_tool_limits={"plan_reviewer": 2, "build_investment_strategy": 2, "rationale_researcher": 3})],
         )
         _runner = Runner(app=adk_app, session_service=_session_service)
     return _runner, _session_service

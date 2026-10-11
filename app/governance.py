@@ -54,11 +54,13 @@ def audit(event: str, **fields: Any) -> None:
 class GovernancePlugin(BasePlugin):
     """Allow-list + per-run tool budget + audit trail for every tool call."""
 
-    def __init__(self, allowed_tools: set[str], max_tool_calls: int = 30):
+    def __init__(self, allowed_tools: set[str], max_tool_calls: int = 30, per_tool_limits: dict[str, int] | None = None):
         super().__init__(name="governance")
         self.allowed_tools = allowed_tools
         self.max_tool_calls = max_tool_calls
+        self.per_tool_limits = per_tool_limits or {}
         self._calls: dict[str, int] = {}
+        self._per_tool: dict[str, int] = {}
         self._t0: dict[str, float] = {}
 
     async def on_user_message_callback(self, *, invocation_context, user_message):
@@ -82,6 +84,12 @@ class GovernancePlugin(BasePlugin):
         if n > self.max_tool_calls:
             audit("tool_budget_exceeded", tool=tool.name, invocation_id=inv, calls=n, severity="WARNING")
             return {"error": "tool call budget exceeded for this run; summarise with what you have"}
+        key = f"{inv}:{tool.name}"
+        self._per_tool[key] = self._per_tool.get(key, 0) + 1
+        limit = self.per_tool_limits.get(tool.name)
+        if limit and self._per_tool[key] > limit:
+            audit("tool_limit_reached", tool=tool.name, invocation_id=inv, severity="WARNING")
+            return {"error": f"'{tool.name}' は1回の実行で{limit}回までです。これ以上の修正は行わず、直近のプランと審査結果（未解決の指摘はリスク欄に明記）で最終回答を書いてください。"}
         audit("tool_call", tool=tool.name, args=tool_args, invocation_id=inv, call_no=n)
         return None
 
@@ -94,5 +102,7 @@ class GovernancePlugin(BasePlugin):
     async def after_run_callback(self, *, invocation_context) -> None:
         inv = invocation_context.invocation_id
         audit("run_complete", invocation_id=inv, tool_calls=self._calls.pop(inv, 0))
+        for k in [k for k in self._per_tool if k.startswith(inv)]:
+            self._per_tool.pop(k, None)
         for k in [k for k in self._t0 if k.startswith(inv)]:
             self._t0.pop(k, None)
