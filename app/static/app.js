@@ -242,7 +242,7 @@ $("#examples").addEventListener("click", (e) => { if (e.target.tagName === "BUTT
 (async () => {
   try {
     const h = await (await fetch("/api/health")).json();
-    $("#status").innerHTML = `Gemini: ${esc(h.model)}<br>EDINET API: ${h.edinet ? "接続" : "シードデータ"}`;
+    $("#status").innerHTML = `Agent: ${esc(h.model)}<br>Reviewer: ${esc(h.reviewer || h.model)}<br>EDINET API: ${h.edinet ? "接続" : "シードデータ"}`;
   } catch { $("#status").textContent = "API未接続"; }
   loadFunds();
   const loadUni = async (tries = 0) => {

@@ -17,7 +17,9 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import analytics, portfolio
+from .agent import MODEL as AGENT_DEFAULT_MODEL
 from .agent import ALLOWED_TOOLS, plan_reviewer, prices_ready, rationale_researcher, root_agent, universe_with_prices
+from .gmi_llm import GmiLlm, gmi_enabled
 from .governance import GovernancePlugin, audit, screen_text
 from .sources import nbim
 
@@ -54,9 +56,10 @@ async def _resolve_model() -> str:
     if _model_ready:
         return _model_ready
     from google import genai
+    from google.genai import types
 
     candidates = [m.strip() for m in os.environ.get("MODEL_CANDIDATES", "").split(",") if m.strip()]
-    candidates = [root_agent.model, *candidates, "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3-flash-preview"]
+    candidates = [AGENT_DEFAULT_MODEL, *candidates, "gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"]
     client = genai.Client()
     for m in dict.fromkeys(candidates):
         try:
@@ -67,8 +70,18 @@ async def _resolve_model() -> str:
             log.warning("model %s unavailable: %s", m, str(e)[:200])
     if not _model_ready:
         raise RuntimeError("No Gemini model available. Check Vertex AI API / region settings.")
+    thinking = None
+    if _model_ready.startswith("gemini-3"):
+        # agentic tool loop: keep reasoning light for latency; the numbers come from deterministic tools
+        level = os.environ.get("THINKING_LEVEL", "LOW").upper()
+        thinking = types.ThinkingConfig(thinking_level=getattr(types.ThinkingLevel, level, types.ThinkingLevel.LOW))
     for a in (root_agent, rationale_researcher, plan_reviewer):
-        a.model = _model_ready
+        if isinstance(a.model, GmiLlm):
+            a.model.fallback_model = _model_ready
+        else:
+            a.model = _model_ready
+        if thinking is not None and a.generate_content_config is not None:
+            a.generate_content_config = a.generate_content_config.model_copy(update={"thinking_config": thinking})
     audit("model_selected", model=_model_ready)
     return _model_ready
 
@@ -126,7 +139,8 @@ class AgentRequest(BaseModel):
 # ---------------------------------------------------------------- REST
 @app.get("/api/health")
 async def health():
-    return {"ok": True, "model": _model_ready or root_agent.model, "edinet": bool(os.environ.get("EDINET_API_KEY"))}
+    reviewer = f"GMI Cloud / {plan_reviewer.model.model}" if isinstance(plan_reviewer.model, GmiLlm) else (_model_ready or str(plan_reviewer.model))
+    return {"ok": True, "model": _model_ready or root_agent.model, "reviewer": reviewer, "edinet": bool(os.environ.get("EDINET_API_KEY"))}
 
 
 @app.get("/api/investors")

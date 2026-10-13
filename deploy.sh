@@ -39,7 +39,13 @@ if [[ -n "${EDINET_KEY}" ]]; then
   else
     printf '%s' "${EDINET_KEY}" | gcloud secrets create edinet-api-key --data-file=- --replication-policy=automatic
   fi
-  SECRET_FLAG=(--set-secrets "EDINET_API_KEY=edinet-api-key:latest")
+fi
+# 既存のシークレットはそのまま参照（キーを再入力しなくてよい）
+SECRETS=()
+gcloud secrets describe edinet-api-key >/dev/null 2>&1 && SECRETS+=("EDINET_API_KEY=edinet-api-key:latest")
+gcloud secrets describe gmi-api-key >/dev/null 2>&1 && SECRETS+=("GMI_API_KEY=gmi-api-key:latest")
+if [[ ${#SECRETS[@]} -gt 0 ]]; then
+  SECRET_FLAG=(--update-secrets "$(IFS=,; echo "${SECRETS[*]}")")
 fi
 
 echo "==> Deploying to Cloud Run"
@@ -50,7 +56,7 @@ gcloud run deploy "${SERVICE}" \
   --allow-unauthenticated \
   --memory 1Gi --cpu 1 --timeout 300 \
   --concurrency 20 --min-instances 0 --max-instances 3 \
-  --set-env-vars "GOOGLE_GENAI_USE_VERTEXAI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=global,ENABLE_CLOUD_TRACE=1,AGENT_RATE_LIMIT=8,MAX_TOOL_CALLS=30" \
+  --set-env-vars "GOOGLE_GENAI_USE_VERTEXAI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=global,ENABLE_CLOUD_TRACE=1,AGENT_RATE_LIMIT=8,MAX_TOOL_CALLS=30,GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.8-flash},GMI_MODEL=${GMI_MODEL:-deepseek-ai/DeepSeek-V4-Pro}" \
   "${SECRET_FLAG[@]}"
 
 URL="$(gcloud run services describe "${SERVICE}" --region "${REGION}" --format='value(status.url)')"

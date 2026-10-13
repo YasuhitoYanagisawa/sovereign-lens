@@ -19,11 +19,12 @@ from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 
 from . import analytics, portfolio
+from .gmi_llm import GmiLlm, gmi_enabled
 from .sources import edinet, nbim, prices
 
 log = logging.getLogger(__name__)
 
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
 _universe_cache: tuple[float, list[dict]] | None = None
 _refresh_task: asyncio.Task | None = None
@@ -189,7 +190,7 @@ rationale_researcher = LlmAgent(
 
 plan_reviewer = LlmAgent(
     name="plan_reviewer",
-    model=MODEL,
+    model=GmiLlm(model=os.environ.get("GMI_MODEL", "deepseek-ai/DeepSeek-V4-Pro"), fallback_model=MODEL) if gmi_enabled() else MODEL,
     description="Independent risk & compliance reviewer. Input: the draft plan JSON and the user's profile. Returns issues to fix.",
     instruction="""あなたは独立したリスク・コンプライアンス審査役です。渡された投資プラン（JSON）を審査し、
 次の観点で問題点を日本語の箇条書きで返してください：
