@@ -16,7 +16,7 @@ STATUS_LABEL = {
     "reduced": "一部売却",
     "exited": "売却・対象外",
 }
-CATEGORY_LABEL = {"sovereign": "政府系", "activist": "物言う株主", "financing": "資金調達型"}
+CATEGORY_LABEL = {"sovereign": "政府系", "activist": "物言う株主", "financing": "警告：買わない方がよい"}
 MOMENTUM_PTS = {"new": 15, "increased": 15, "holding": 10, "reduced": 3, "exited": 0}
 _STATUS_RANK = {"new": 4, "increased": 4, "holding": 3, "reduced": 1, "exited": 0}
 
@@ -204,8 +204,9 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
         signals.append(f"現在値はファンドの推定取得単価より{abs(diff):.0f}%{'高い' if diff >= 0 else '安い'}")
     warning = None
     if financing:
-        warning = "EVO FUND等の資金調達型ファンドが保有（MSワラント等）。行使後の売却で株価が下がりやすいため、追随は推奨しません。"
-        signals.append("⚠ 資金調達型ファンドが保有（希薄化・売り圧力に注意）")
+        names = "・".join(dict.fromkeys(investor_name(r["investor_id"], short=True) for r in financing))
+        warning = f"【警告：買わない方がよい】資金調達型の投資家（{names}）が新株予約権などを引き受けて保有しています。行使して得た株を市場で売るため、株価が下がりやすく、株式の希薄化も起きます。"
+        signals.append(f"⚠ 警告：資金調達型（{names}）が保有。買わない方がよい")
 
     return {
         "code": base["code"],

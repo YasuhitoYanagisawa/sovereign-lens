@@ -19,7 +19,7 @@ let lastPlan = null;
 let scoreGuide = [];
 let timingGuide = "";
 let catFilter = "sovereign";
-const CAT_JA = { sovereign: "政府系", activist: "物言う株主", financing: "資金調達型" };
+const CAT_JA = { sovereign: "政府系", activist: "物言う株主", financing: "警告" };
 const timingBadge = (t) => {
   if (!t || t.score == null) return `<span class="tbadge na">—</span>`;
   const cls = t.score >= 70 ? "buy" : t.score >= 55 ? "split" : t.score >= 40 ? "wait" : "avoid";
@@ -205,7 +205,7 @@ function renderUniverse() {
       const mom = { new: "新規", increased: "買増", holding: "継続", reduced: "一部売却", exited: "対象外" }[s.momentum] || s.momentum;
       return `<tr data-code="${esc(s.code)}" ${s.candidate ? "" : 'class="dim"'}>
         <td><div class="scorebar"><span style="width:${s.score * 0.6}px"></span><b class="num">${s.score}</b></div></td>
-        <td class="name"><b>${esc(s.name_ja)}</b><small>${esc(s.code)}・${esc(s.sector)}</small>${s.warning ? '<small class="down">⚠ 資金調達型が保有</small>' : ""}</td>
+        <td class="name"><b>${esc(s.name_ja)}</b><small>${esc(s.code)}・${esc(s.sector)}</small>${s.warning ? '<small class="down">⚠ 警告：買わない方がよい</small>' : ""}</td>
         <td>${catChips(s.categories)}</td>
         <td>${fundChips(s)}</td><td class="num">${pct(s.max_ownership_pct)}</td><td class="num">${yen(s.ref_cost_jpy)}</td>
         <td class="num">${yen(s.price_jpy)}</td><td>${timingBadge(s.timing)}</td>
@@ -251,7 +251,7 @@ function openDossier(code) {
 /* ---------- funds ---------- */
 async function loadFunds() {
   const d = await (await fetch("/api/investors")).json();
-  const groups = [["sovereign", "政府系ファンド・公的年金（長期保有）"], ["activist", "物言う株主（増配・TOB・経営改革などのイベント狙い）"], ["financing", "資金調達型（追随非推奨）"]];
+  const groups = [["sovereign", "政府系ファンド・公的年金（長期保有）"], ["activist", "物言う株主（増配・TOB・経営改革などのイベント狙い）"], ["financing", "警告対象：資金調達型（保有銘柄は買わない方がよい）"]];
   $("#fundCards").innerHTML = groups.map(([c, title]) => `<h2 class="grouph">${title}</h2><div class="cards">${d.investors.filter((i) => i.category === c).map((i) => `<div class="panel ${c}"><h3>${esc(i.name_ja)}</h3>
     <div class="meta">${esc(i.country)} ・ ${esc(i.type)} ・ 開示：${esc(i.disclosure)}</div>
     <p>${esc(i.profile)}</p><p class="fine">追跡中の日本株：${i.japan_holdings_tracked}銘柄</p></div>`).join("")}</div>`).join("") +

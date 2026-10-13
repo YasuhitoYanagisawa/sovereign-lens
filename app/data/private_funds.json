@@ -108,7 +108,7 @@
    "name_ja": "EVO FUND（エボ ファンド）",
    "name_en": "EVO FUND",
    "country": "ケイマン",
-   "type": "資金調達型ファンド（追随非推奨）",
+   "type": "資金調達型（買わない方がよい）",
    "disclosure": "EDINET 大量保有報告書（MSワラント等の引受け）",
    "edinet_filer_keywords": [
     "Evo Fund",
@@ -116,6 +116,70 @@
     "エボ ファンド"
    ],
    "profile": "行使価額修正条項付き新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株は長期保有せず、市場で売却する方針と開示されている。保有比率が高く見えるのは未行使分を含むためで、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。 2026年10月時点で22社に5%超（潜在株ベース）の報告がある。"
+  },
+  {
+   "id": "macquarie",
+   "category": "financing",
+   "short": "マッコーリー",
+   "name_ja": "マッコーリー・バンク・リミテッド",
+   "name_en": "Macquarie Bank Limited",
+   "country": "オーストラリア",
+   "type": "資金調達型（買わない方がよい）",
+   "disclosure": "EDINET 大量保有報告書（MSワラント等の引受け）",
+   "edinet_filer_keywords": [
+    "マッコーリー バンク",
+    "マッコーリー・バンク",
+    "Macquarie Bank"
+   ],
+   "profile": "新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株を市場で売るため、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
+  },
+  {
+   "id": "heights_cvi",
+   "category": "financing",
+   "short": "CVI",
+   "name_ja": "ハイツ・キャピタル（CVI Investments）",
+   "name_en": "Heights Capital Management / CVI Investments",
+   "country": "米国",
+   "type": "資金調達型（買わない方がよい）",
+   "disclosure": "EDINET 大量保有報告書（MSワラント等の引受け）",
+   "edinet_filer_keywords": [
+    "ハイツ・キャピタル",
+    "Heights Capital",
+    "CVI Investments"
+   ],
+   "profile": "新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株を市場で売るため、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
+  },
+  {
+   "id": "cantor",
+   "category": "financing",
+   "short": "キャンター",
+   "name_ja": "キャンター・フィッツジェラルド・ヨーロッパ",
+   "name_en": "Cantor Fitzgerald Europe",
+   "country": "英国",
+   "type": "資金調達型（買わない方がよい）",
+   "disclosure": "EDINET 大量保有報告書（MSワラント等の引受け）",
+   "edinet_filer_keywords": [
+    "CANTOR FITZGERALD",
+    "キャンター",
+    "Cantor Fitzgerald"
+   ],
+   "profile": "新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株を市場で売るため、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
+  },
+  {
+   "id": "long_corridor",
+   "category": "financing",
+   "short": "ロング・コリドー",
+   "name_ja": "ロング・コリドー・アセット・マネジメント",
+   "name_en": "Long Corridor Asset Management",
+   "country": "香港",
+   "type": "資金調達型（買わない方がよい）",
+   "disclosure": "EDINET 大量保有報告書（第三者割当・MSワラント等）",
+   "edinet_filer_keywords": [
+    "Long Corridor",
+    "ロング・コリドー",
+    "ロング コリドー"
+   ],
+   "profile": "第三者割当やMSワラントの割当先として多く登場する。一部は通常の株式取得の可能性もあるが、資金調達型として扱う。行使で得た株を市場で売るため、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
   }
  ],
  "holdings": [
@@ -1191,6 +1255,454 @@
    "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
    "sources": [
     "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "macquarie",
+   "entity": "Macquarie Bank Limited",
+   "code": "2370",
+   "name_ja": "メディネット",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 13.1,
+   "latest_report": "2026-08-07",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E23594"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "macquarie",
+   "entity": "Macquarie Bank Limited",
+   "code": "3490",
+   "name_ja": "アズ企画設計",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 19.86,
+   "latest_report": "2026-08-06",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E23594"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "macquarie",
+   "entity": "Macquarie Bank Limited",
+   "code": "6081",
+   "name_ja": "アライドアーキテクツ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 34.2,
+   "latest_report": "2026-07-16",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E23594"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "macquarie",
+   "entity": "Macquarie Bank Limited",
+   "code": "1420",
+   "name_ja": "サンヨーホームズ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 12.26,
+   "latest_report": "2026-05-15",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E23594"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "macquarie",
+   "entity": "Macquarie Bank Limited",
+   "code": "9219",
+   "name_ja": "ギックス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.27,
+   "latest_report": "2025-10-17",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E23594"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "4978",
+   "name_ja": "リプロセル",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 8.25,
+   "latest_report": "2026-09-14",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "4888",
+   "name_ja": "ステラファーマ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.84,
+   "latest_report": "2026-09-09",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "2338",
+   "name_ja": "クオンタムソリューションズ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 38.82,
+   "latest_report": "2026-08-31",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "7777",
+   "name_ja": "スリー・ディー・マトリックス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.41,
+   "latest_report": "2026-03-16",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "9348",
+   "name_ja": "ispace",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.07,
+   "latest_report": "2026-03-06",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "heights_cvi",
+   "entity": "Heights Capital Management / CVI Investments",
+   "code": "4579",
+   "name_ja": "ラクオリア創薬",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 5.41,
+   "latest_report": "2025-03-31",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34539"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "4572",
+   "name_ja": "カルナバイオサイエンス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 27.24,
+   "latest_report": "2026-10-09",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "3083",
+   "name_ja": "スターシーズ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 28.54,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "2656",
+   "name_ja": "ベクターホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 35.96,
+   "latest_report": "2026-09-07",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "8927",
+   "name_ja": "明豊エンタープライズ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 5.75,
+   "latest_report": "2026-09-07",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "6656",
+   "name_ja": "インスペック",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 37.02,
+   "latest_report": "2026-08-25",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "4890",
+   "name_ja": "坪田ラボ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 18.63,
+   "latest_report": "2026-06-19",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "7615",
+   "name_ja": "京都きもの友禅ホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 12.71,
+   "latest_report": "2026-04-27",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "3556",
+   "name_ja": "リネットジャパングループ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 9.73,
+   "latest_report": "2026-03-31",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "cantor",
+   "entity": "Cantor Fitzgerald Europe",
+   "code": "4582",
+   "name_ja": "シンバイオ製薬",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.35,
+   "latest_report": "2026-03-04",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36549"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "9425",
+   "name_ja": "ReYuu Japan",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 33.59,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "3185",
+   "name_ja": "夢展望",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 13.08,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "8783",
+   "name_ja": "abc",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 26.95,
+   "latest_report": "2026-09-24",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "4918",
+   "name_ja": "アイビー化粧品",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 17.83,
+   "latest_report": "2026-08-24",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "3066",
+   "name_ja": "JBイレブン",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 20.17,
+   "latest_report": "2026-06-30",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "5391",
+   "name_ja": "エーアンドエーマテリアル",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 14.32,
+   "latest_report": "2026-06-16",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "2404",
+   "name_ja": "鉄人化ホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 8.84,
+   "latest_report": "2025-08-14",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "long_corridor",
+   "entity": "Long Corridor Asset Management",
+   "code": "5248",
+   "name_ja": "テクノロジーズ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.32,
+   "latest_report": "2025-03-03",
+   "status": "holding",
+   "history": "新株予約権等の引受けによる保有（比率は潜在株を含む場合あり）。行使と市場売却で短期間に下がる傾向。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E36069"
    ],
    "confidence": "medium"
   }
