@@ -29,10 +29,10 @@ class ScriptedLlm(BaseLlm):
 
 
 def test_runner_with_governance(monkeypatch):
-    async def fake_prices(codes):
-        return {c: 3000.0 for c in codes}
+    async def fake_quotes(codes):
+        return {c: {"price": 3000.0, "high52": 3600.0, "low52": 2500.0, "ma200": 2900.0} for c in codes}
 
-    monkeypatch.setattr(ag.prices, "get_prices", fake_prices)
+    monkeypatch.setattr(ag.prices, "get_quotes", fake_quotes)
     ag._universe_cache = None
     original_model = ag.root_agent.model
     ag.root_agent.model = ScriptedLlm()

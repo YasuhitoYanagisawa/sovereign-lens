@@ -112,3 +112,47 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
   .status{text-align:left}
 }
 .tablewrap table.grid{min-width:760px}
+/* v2: guide, categories, timing, steps, holdings */
+.guide{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0 12px;background:var(--paper)}
+.guide summary{cursor:pointer;font-weight:700;font-size:.9rem}
+.guide p{font-size:.85rem;margin:.5em 0}
+.guide-t{min-width:0!important}.guide-t td{font-size:.8rem}
+.chips.filter button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cat{display:inline-block;font-size:.68rem;padding:0 6px;border-radius:4px;margin:1px 2px 1px 0;white-space:nowrap;border:1px solid}
+.cat.sovereign{color:var(--accent);border-color:var(--accent)}
+.cat.activist{color:var(--gold);border-color:var(--gold)}
+.cat.financing{color:var(--warn);border-color:var(--warn)}
+.tbadge{display:inline-block;font-size:.72rem;padding:1px 7px;border-radius:999px;white-space:nowrap;font-weight:700}
+.tbadge.buy{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.tbadge.split{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.tbadge.wait{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold)}
+.tbadge.avoid{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.tbadge.na{color:var(--muted)}
+tr.dim{opacity:.55}
+.warnbox{border:1px solid var(--warn);color:var(--warn);border-radius:8px;padding:8px 10px;font-size:.85rem}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0}
+.dgrid h3{font-size:.95rem;margin-bottom:6px}
+.bd{display:grid;grid-template-columns:6em 1fr 3.5em;gap:8px;align-items:center;font-size:.8rem;margin:3px 0}
+.bd i{display:block;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bd i b{display:block;height:100%;background:var(--gold)}
+.bd em{font-style:normal;font-family:var(--mono);text-align:right}
+.reasons{font-size:.82rem;padding-left:1.1em;margin:4px 0}
+.steps{list-style:none;padding:0;margin:0 0 8px;font-size:.88rem}
+.steps li{display:flex;align-items:center;gap:8px;padding:3px 0;color:var(--muted)}
+.steps li .dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--line);flex:none}
+.steps li.run{color:var(--ink)}.steps li.run .dot{border-color:var(--accent);border-top-color:transparent;animation:spin 1s linear infinite}
+.steps li.done{color:var(--ink)}.steps li.done .dot{background:var(--ok);border-color:var(--ok)}
+.steps li.err .dot{background:var(--warn);border-color:var(--warn)}
+.steps li em{font-style:normal;font-size:.75rem;color:var(--muted)}
+.grouph{font-size:1rem;margin:18px 0 10px}
+.cards .panel.activist{border-top:3px solid var(--gold)}.cards .panel.sovereign{border-top:3px solid var(--accent)}.cards .panel.financing{border-top:3px solid var(--warn)}
+.mine-form{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:8px;margin:8px 0 12px}
+.mine-form input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit;min-width:0}
+.mine-form .primary{width:auto}
+.mine-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.mine-sum div{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.mine-sum span{display:block;font-size:.75rem;color:var(--muted)}
+.mine-sum b{font-size:1.05rem}
+.linkbtn{background:none;border:0;color:var(--warn);cursor:pointer;font:inherit;font-size:.8rem}
+.filelabel{display:inline-block;cursor:pointer}
+@media (max-width:900px){.dgrid{grid-template-columns:1fr}.mine-form{grid-template-columns:1fr 1fr}.mine-sum{grid-template-columns:1fr 1fr}}

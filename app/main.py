@@ -140,6 +140,7 @@ class Profile(BaseModel):
     horizon_years: int = Field(10, ge=1, le=50)
     use_nisa: bool = True
     exclude_codes: list[str] = Field(default_factory=list, max_length=30)
+    include_activists: bool = False
     note: str = Field("", max_length=500)
 
 
@@ -169,7 +170,33 @@ async def api_investors():
 @app.get("/api/universe")
 async def api_universe():
     stocks = await universe_with_prices(wait=False)
-    return {"as_of": analytics.load_seed()["as_of"], "prices_loading": not prices_ready(), "stocks": stocks}
+    return {"as_of": analytics.load_seed()["as_of"], "prices_loading": not prices_ready(), "score_guide": analytics.SCORE_GUIDE, "timing_guide": analytics.TIMING_GUIDE, "stocks": stocks}
+
+
+@app.get("/api/quotes")
+async def api_quotes(codes: str):
+    """Quotes for the user's own holdings (portfolio tracker). Codes: comma separated, max 50."""
+    import re as _re
+
+    from .sources import prices as _prices
+
+    wanted = [c for c in (x.strip().upper() for x in codes.split(",")) if _re.fullmatch(r"[0-9]{3}[0-9A-Z]", c)][:50]
+    qs = await _prices.get_quotes(wanted)
+    tracked = {s["code"]: s for s in await universe_with_prices(wait=False)}
+    out = {}
+    for c in wanted:
+        q = qs.get(c) or {}
+        t = tracked.get(c)
+        out[c] = {
+            "price": q.get("price"),
+            "prev_close": q.get("prev_close"),
+            "tracked": bool(t),
+            "name_ja": t["name_ja"] if t else None,
+            "timing": t["timing"] if t else None,
+            "momentum": t["momentum"] if t else None,
+            "fund_alert": (f"ファンドが一部売却（{', '.join(h['investor_short'] for h in t['holders'] if h['status'] in ('reduced','exited'))}）" if t and any(h["status"] in ("reduced", "exited") for h in t["holders"]) else None),
+        }
+    return {"quotes": out}
 
 
 @app.get("/api/stocks/{code}")
@@ -203,7 +230,8 @@ def _profile_prompt(p: Profile) -> str:
     return (
         f"私の条件で、政府系ファンドの日本株投資に追随する投資戦略を作ってください。\n"
         f"- 投資可能額: {p.investable_jpy:,}円\n- リスク許容度: {risk}（{p.risk}）\n- 投資期間: {p.horizon_years}年\n"
-        f"- NISA利用: {'する' if p.use_nisa else 'しない'}\n- 除外したい銘柄コード: {ex}\n- 補足: {p.note or 'なし'}"
+        f"- NISA利用: {'する' if p.use_nisa else 'しない'}\n- 除外したい銘柄コード: {ex}\n"
+        f"- 物言う株主（アクティビスト）の保有銘柄も対象にする: {'はい（include_activists=true, category=all）' if p.include_activists else 'いいえ（政府系のみ）'}\n- 補足: {p.note or 'なし'}"
     )
 
 
@@ -240,26 +268,38 @@ async def api_agent(req: AgentRequest, request: Request):
         usage = {"prompt": 0, "output": 0}
         final_text = ""
         try:
+            from google.adk.agents.run_config import RunConfig, StreamingMode
+
             async for ev in runner.run_async(
-                user_id=uid, session_id=session.id, new_message=types.Content(role="user", parts=[types.Part(text=text)])
+                user_id=uid,
+                session_id=session.id,
+                new_message=types.Content(role="user", parts=[types.Part(text=text)]),
+                run_config=RunConfig(streaming_mode=StreamingMode.SSE),
             ):
                 um = getattr(ev, "usage_metadata", None)
-                if um:
+                if um and not ev.partial:
                     usage["prompt"] += um.prompt_token_count or 0
                     usage["output"] += um.candidates_token_count or 0
                 if not ev.content or not ev.content.parts:
                     continue
                 for part in ev.content.parts:
-                    if part.function_call:
+                    if part.function_call and not ev.partial:
                         yield _sse("tool_call", {"t": round(time.time() - t0, 1), "agent": ev.author, "tool": part.function_call.name, "args": part.function_call.args})
                     elif part.function_response:
                         resp = part.function_response.response or {}
                         preview = json.dumps(resp, ensure_ascii=False, default=str)
-                        yield _sse("tool_result", {"t": round(time.time() - t0, 1), "tool": part.function_response.name, "chars": len(preview), "error": resp.get("error") if isinstance(resp, dict) else None, "preview": preview[:400]})
-                    elif part.text and not getattr(part, "thought", False):
-                        if ev.author == root_agent.name:
-                            final_text = part.text if ev.is_final_response() else final_text
-                            yield _sse("text", {"t": round(time.time() - t0, 1), "agent": ev.author, "text": part.text, "final": ev.is_final_response()})
+                        err = resp.get("error") if isinstance(resp, dict) else None
+                        yield _sse("tool_result", {"t": round(time.time() - t0, 1), "tool": part.function_response.name, "chars": len(preview), "error": err, "cached": bool(isinstance(resp, dict) and resp.get("_cached")), "preview": preview[:400]})
+                        if part.function_response.name == "build_investment_strategy" and isinstance(resp, dict) and not err and resp.get("allocation"):
+                            yield _sse("plan", resp)  # show the numbers as soon as they exist
+                    elif part.text and not getattr(part, "thought", False) and ev.author == root_agent.name:
+                        if ev.partial:
+                            yield _sse("delta", {"text": part.text})
+                        else:
+                            final = ev.is_final_response()
+                            if final:
+                                final_text = part.text
+                            yield _sse("text", {"t": round(time.time() - t0, 1), "agent": ev.author, "text": part.text, "final": final})
             s = await sessions.get_session(app_name=APP_NAME, user_id=uid, session_id=session.id)
             plan = (s.state or {}).get("plan") if s else None
             if plan:

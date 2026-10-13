@@ -54,6 +54,7 @@
         <input id="horizon" type="range" min="1" max="30" value="10">
       </label>
       <label class="field check"><input id="nisa" type="checkbox" checked> NISAを利用する</label>
+      <label class="field check"><input id="activists" type="checkbox"> 実績のある物言う株主（村上系・エフィッシモ・オアシス・エリオット等）の保有銘柄も対象にする</label>
       <label class="field">
         <span>除外したい銘柄コード（任意）</span>
         <input id="exclude" type="text" placeholder="例: 9697, 3659">
@@ -70,7 +71,8 @@
   <section class="content">
     <nav class="tabs" role="tablist">
       <button role="tab" class="on" data-tab="plan">戦略</button>
-      <button role="tab" data-tab="stocks">SWF保有銘柄</button>
+      <button role="tab" data-tab="stocks">ファンド保有銘柄</button>
+      <button role="tab" data-tab="mine">保有管理</button>
       <button role="tab" data-tab="funds">追跡ファンド</button>
       <button role="tab" data-tab="nbim">NBIMライブ</button>
       <button role="tab" data-tab="ask">質問する</button>
@@ -101,6 +103,7 @@
           <ul class="warns" id="warns"></ul>
           <div class="approve">
             <button class="secondary" id="approveBtn" disabled>内容を確認した（発注メモをCSVで保存）</button>
+            <button class="secondary" id="toMineBtn" disabled>買った銘柄を保有管理に記録</button>
             <span class="fine" id="disclaimer"></span>
           </div>
         </div>
@@ -120,13 +123,36 @@
 
     <div class="tab" id="tab-stocks">
       <div class="panel">
-        <div class="plan-head"><h2>政府系ファンドが保有する日本株</h2><small class="muted" id="asOf"></small></div>
-        <p class="fine">推定取得単価＝大量保有報告書の「取得資金合計÷保有株数」（株式分割調整後）。約定単価ではありません。行をクリックで詳細。</p>
+        <div class="plan-head"><h2>ファンドが保有する日本株</h2><small class="muted" id="asOf"></small></div>
+        <details class="guide" open><summary>スコアと買い時判定の見方</summary><div id="guideBody"></div></details>
+        <div class="chips filter" id="catFilter">
+          <button type="button" data-cat="sovereign" class="on">政府系</button>
+          <button type="button" data-cat="activist">物言う株主</button>
+          <button type="button" data-cat="financing">資金調達型（参考）</button>
+          <button type="button" data-cat="all">すべて</button>
+        </div>
+        <p class="fine">推定取得単価＝大量保有報告書の「取得資金合計÷保有株数」（株式分割調整後）で、約定単価ではありません。行をクリックすると詳細が開きます。</p>
         <div class="tablewrap"><table class="grid hover" id="uniTable"></table></div>
       </div>
     </div>
 
-    <div class="tab" id="tab-funds"><div class="cards" id="fundCards"></div></div>
+    <div class="tab" id="tab-mine">
+      <div class="panel">
+        <div class="plan-head"><h2>保有管理（損益）</h2><span class="fine">記録はこのブラウザ内にだけ保存されます（サーバーには送りません）</span></div>
+        <form id="mineForm" class="mine-form">
+          <input id="mCode" placeholder="銘柄コード 例: 7974" maxlength="4" required>
+          <input id="mShares" type="number" min="1" step="1" placeholder="株数" required>
+          <input id="mPrice" type="number" min="0" step="0.1" placeholder="取得単価(円)" required>
+          <input id="mDate" type="date">
+          <button class="primary">追加</button>
+        </form>
+        <div class="tablewrap"><table class="grid" id="mineTable"></table></div>
+        <div class="mine-sum" id="mineSum"></div>
+        <p class="approve"><button class="secondary" id="mineRefresh">株価を更新</button><button class="secondary" id="mineExport">JSONで書き出し</button><label class="secondary filelabel">JSONを読み込み<input type="file" id="mineImport" accept="application/json" hidden></label></p>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-funds"><div id="fundCards"></div></div>
 
     <div class="tab" id="tab-nbim">
       <div class="panel">

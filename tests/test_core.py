@@ -104,3 +104,34 @@ def test_httpx_logging_silenced():
     import logging
     import app.main  # noqa: F401
     assert logging.getLogger("httpx").getEffectiveLevel() >= logging.WARNING
+
+
+def test_private_funds_loaded_and_categorised():
+    u = analytics.universe(PX)
+    cats = {c for s in u for c in s["categories"]}
+    assert {"sovereign", "activist", "financing"} <= cats
+    evo = next(s for s in u if s["code"] == "8105")
+    assert evo["candidate"] is False and evo["warning"]
+    sq = next(s for s in u if s["code"] == "9684")  # PIF + 3D
+    assert {"sovereign", "activist"} <= set(sq["categories"])
+
+
+def test_activist_switch(uni):
+    only_swf = portfolio.build_strategy(uni, 30_000_000, "aggressive", 10, True)
+    assert all("sovereign" in p["categories"] for p in only_swf["positions"])
+    with_act = portfolio.build_strategy(uni, 30_000_000, "aggressive", 10, True, include_activists=True)
+    assert with_act["all_checks_passed"]
+
+
+def test_entry_timing_rules():
+    t = analytics.entry_timing(1000, 1100, {"high52": 1400, "ma200": 950}, "increased")
+    assert t["label"] == "買い場候補" and t["score"] >= 70
+    t2 = analytics.entry_timing(3000, 1000, {"high52": 3050, "ma200": 2200}, "reduced")
+    assert t2["label"] == "見送り推奨"
+
+
+def test_research_cache_key_uses_codes():
+    from app.governance import GovernancePlugin
+    k1 = GovernancePlugin._cache_key("rationale_researcher", {"request": "ネクソン 3659 をPIFが選んだ理由"})
+    k2 = GovernancePlugin._cache_key("rationale_researcher", {"request": "PIFがネクソン(3659)に投資した背景を調べて"})
+    assert k1 == k2 == "rationale_researcher:3659"

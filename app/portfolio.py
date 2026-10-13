@@ -106,6 +106,7 @@ def build_strategy(
     use_nisa: bool = True,
     exclude_codes: list[str] | None = None,
     max_names: int | None = None,
+    include_activists: bool = False,
 ) -> dict:
     if risk not in PROFILES:
         raise StrategyInputError(f"risk must be one of {list(PROFILES)}")
@@ -128,6 +129,7 @@ def build_strategy(
         s
         for s in universe
         if s["candidate"]
+        and ("sovereign" in s.get("categories", ["sovereign"]) or (include_activists and "activist" in s.get("categories", [])))
         and s["code"].upper() not in exclude
         and s.get("size") in p.sizes
         and s["score"] >= p.min_score
@@ -170,7 +172,12 @@ def build_strategy(
             continue
         sat_used += amount
         ref = s.get("ref_cost_jpy")
-        if price and ref:
+        timing = s.get("timing") or {}
+        if timing.get("score") is not None and timing["score"] < 40:
+            entry = f"【{timing['label']}】今は買わず、押し目（52週高値から15%程度の下落）を待つ"
+        elif timing.get("score") is not None and timing["score"] >= 70:
+            entry = f"【{timing['label']}】2回に分けて購入"
+        elif price and ref:
             if price <= ref * 1.1:
                 entry = "SWFの推定取得コスト付近。2回に分けて購入"
             else:
@@ -189,6 +196,9 @@ def build_strategy(
                 "shares": shares,
                 "order_method": method,
                 "entry_plan": entry,
+                "timing": (s.get("timing") or {}).get("label"),
+                "timing_score": (s.get("timing") or {}).get("score"),
+                "categories": s.get("categories", []),
                 "followed_investors": list(dict.fromkeys(h.get("investor_short", h["investor_name"]) for h in s["holders"] if h["status"] != "exited")),
                 "signals": s["signals"],
             }
@@ -219,7 +229,7 @@ def build_strategy(
         warnings.append("NISA成長投資枠は年240万円まで。超える分は特定口座で購入してください。")
 
     return {
-        "inputs": {"investable_jpy": investable_jpy, "risk": risk, "risk_label": p.label, "horizon_years": horizon_years, "use_nisa": use_nisa, "exclude_codes": sorted(exclude)},
+        "inputs": {"include_activists": include_activists, "investable_jpy": investable_jpy, "risk": risk, "risk_label": p.label, "horizon_years": horizon_years, "use_nisa": use_nisa, "exclude_codes": sorted(exclude)},
         "allocation": {
             "core_index_jpy": round(core_amt),
             "satellite_stocks_jpy": round(sat_used),

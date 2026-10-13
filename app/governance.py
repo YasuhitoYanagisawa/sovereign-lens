@@ -62,6 +62,9 @@ class GovernancePlugin(BasePlugin):
         self._calls: dict[str, int] = {}
         self._per_tool: dict[str, int] = {}
         self._t0: dict[str, float] = {}
+        self._cache: dict[str, tuple[float, Any]] = {}
+        self.cache_ttl = 12 * 3600
+        self.cacheable = {"rationale_researcher"}
 
     async def on_user_message_callback(self, *, invocation_context, user_message):
         text = "".join(p.text or "" for p in (user_message.parts or []))
@@ -90,12 +93,27 @@ class GovernancePlugin(BasePlugin):
         if limit and self._per_tool[key] > limit:
             audit("tool_limit_reached", tool=tool.name, invocation_id=inv, severity="WARNING")
             return {"error": f"'{tool.name}' は1回の実行で{limit}回までです。これ以上の修正は行わず、直近のプランと審査結果（未解決の指摘はリスク欄に明記）で最終回答を書いてください。"}
+        if tool.name in self.cacheable:
+            hit = self._cache.get(self._cache_key(tool.name, tool_args))
+            if hit and time.time() - hit[0] < self.cache_ttl:
+                audit("tool_cache_hit", tool=tool.name, invocation_id=inv)
+                cached = hit[1] if isinstance(hit[1], dict) else {"result": hit[1]}
+                return {**cached, "_cached": True}
         audit("tool_call", tool=tool.name, args=tool_args, invocation_id=inv, call_no=n)
         return None
+
+    @staticmethod
+    def _cache_key(name: str, args: dict) -> str:
+        """Research requests are phrased differently each run; key them by the stock codes they mention."""
+        text = json.dumps(args, ensure_ascii=False, sort_keys=True)
+        codes = sorted(set(re.findall(r"(?<![0-9A-Z])([0-9]{3}[0-9A-Z])(?![0-9A-Z])", text)))
+        return f"{name}:{','.join(codes) if codes else text}"
 
     async def after_tool_callback(self, *, tool, tool_args, tool_context, result) -> Optional[dict]:
         inv = tool_context.invocation_id
         size = len(json.dumps(result, ensure_ascii=False, default=str)) if result is not None else 0
+        if tool.name in self.cacheable and result and not (isinstance(result, dict) and (result.get("error") or result.get("_cached"))):
+            self._cache[self._cache_key(tool.name, tool_args)] = (time.time(), result)
         audit("tool_result", tool=tool.name, invocation_id=inv, result_chars=size, error=(result or {}).get("error") if isinstance(result, dict) else None)
         return None
 

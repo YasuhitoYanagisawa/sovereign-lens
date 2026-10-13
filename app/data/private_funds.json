@@ -1,0 +1,918 @@
+{
+ "as_of": "2026-10-14",
+ "note": "民間の著名アクティビスト（物言う株主）と資金調達型ファンドの5%超保有。EDINET大量保有報告書（ミラー: ufocatch / maonline）で確認。ownership_pctは共同保有者合算。EVOの比率は未行使の新株予約権を含む潜在保有。 追随対象の民間は、日本で実績が明確な大手アクティビスト（村上系・エフィッシモ・オアシス・エリオット・バリューアクト・3D）に限定。",
+ "investors": [
+  {
+   "id": "murakami",
+   "category": "activist",
+   "short": "村上系",
+   "name_ja": "村上世彰系（シティインデックスイレブンス等）",
+   "name_en": "Murakami-related group",
+   "country": "日本/シンガポール",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "シティインデックス",
+    "南青山不動産",
+    "野村絢",
+    "エスグラントコーポレーション",
+    "Ｃ＆Ｉ Holdings",
+    "C＆I Holdings",
+    "Ｍホールディングス",
+    "オフィスサポート",
+    "レノ"
+   ],
+   "profile": "旧村上ファンドの村上世彰氏の関連会社や親族が共同で保有する。増配・自社株買い・TOBへの応募などで株主還元を求める一方、短期大量譲渡で一気に手放すことも多い。"
+  },
+  {
+   "id": "effissimo",
+   "category": "activist",
+   "short": "エフィッシモ",
+   "name_ja": "エフィッシモ・キャピタル・マネージメント",
+   "name_en": "Effissimo Capital Management",
+   "country": "シンガポール",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "エフィッシモ",
+    "Effissimo"
+   ],
+   "profile": "旧村上ファンド出身者が設立した。川崎汽船・リコー・第一生命HDなどの大型株を高い比率で長く持つ、長期型のアクティビスト。"
+  },
+  {
+   "id": "oasis",
+   "category": "activist",
+   "short": "オアシス",
+   "name_ja": "オアシス・マネジメント",
+   "name_en": "Oasis Management",
+   "country": "香港",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "オアシス マネジメント",
+    "オアシス・マネジメント",
+    "Oasis Management"
+   ],
+   "profile": "セス・フィッシャー氏が率いる。フジテックで取締役の入れ替えを実現し、花王・小林製薬などでも公開キャンペーンを行った。2026年はエムスリーやインフォマートを急速に買い増している。"
+  },
+  {
+   "id": "3d",
+   "category": "activist",
+   "short": "3D",
+   "name_ja": "3Dインベストメント・パートナーズ",
+   "name_en": "3D Investment Partners",
+   "country": "シンガポール",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "3Dインベストメント",
+    "3D Investment Partners"
+   ],
+   "profile": "富士ソフトの買収合戦やサッポロHDへの関与で知られる。2026年は西武HDとJ.フロントを買い増している。"
+  },
+  {
+   "id": "elliott",
+   "category": "activist",
+   "short": "エリオット",
+   "name_ja": "エリオット",
+   "name_en": "Elliott Investment Management",
+   "country": "米国",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "エリオット",
+    "Elliott Investment",
+    "Elliott International"
+   ],
+   "profile": "世界最大級のアクティビスト。日本では東芝・東京ガス・豊田自動織機などに投資してきた。"
+  },
+  {
+   "id": "valueact",
+   "category": "activist",
+   "short": "バリューアクト",
+   "name_ja": "バリューアクト・キャピタル",
+   "name_en": "ValueAct Capital",
+   "country": "米国",
+   "type": "アクティビスト",
+   "disclosure": "EDINET 大量保有報告書（5%超）",
+   "edinet_filer_keywords": [
+    "ValueAct",
+    "バリューアクト"
+   ],
+   "profile": "経営陣との対話を重視する米国のアクティビスト。オリンパス・JSRで実績があり、2025〜26年はマネーフォワードや宝HDを買い増している。"
+  },
+  {
+   "id": "evo",
+   "category": "financing",
+   "short": "EVO",
+   "name_ja": "EVO FUND（エボ ファンド）",
+   "name_en": "EVO FUND",
+   "country": "ケイマン",
+   "type": "資金調達型ファンド（追随非推奨）",
+   "disclosure": "EDINET 大量保有報告書（MSワラント等の引受け）",
+   "edinet_filer_keywords": [
+    "Evo Fund",
+    "EVO FUND",
+    "エボ ファンド"
+   ],
+   "profile": "行使価額修正条項付き新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株は長期保有せず、市場で売却する方針と開示されている。保有比率が高く見えるのは未行使分を含むためで、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
+  }
+ ],
+ "holdings": [
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "2972",
+   "name_ja": "サンケイリアルエステート投資法人",
+   "sector": "REIT",
+   "size": "small",
+   "ownership_pct": 29.9,
+   "peak_pct": 29.9,
+   "est_cost_jpy": null,
+   "first_seen": "2026-01-23",
+   "latest_report": "2026-10-02",
+   "status": "increased",
+   "history": "2026/1に7.36%で新規。毎月のように買い増し、29.90%まで上昇。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E35393"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "9831",
+   "name_ja": "ヤマダホールディングス",
+   "sector": "小売",
+   "size": "large",
+   "ownership_pct": 8.36,
+   "peak_pct": 8.36,
+   "est_cost_jpy": 612,
+   "cost_basis_note": "初回報告の取得資金÷株数",
+   "first_seen": "2026-07-21",
+   "latest_report": "2026-09-10",
+   "status": "increased",
+   "history": "2026/7に5.10%で新規（エディオンとの統合合意の後）。9月に8.36%まで買い増し。",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100YR7O.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "3863",
+   "name_ja": "日本製紙",
+   "sector": "パルプ・紙",
+   "size": "mid",
+   "ownership_pct": 9.78,
+   "peak_pct": 9.78,
+   "est_cost_jpy": null,
+   "first_seen": "2026-05-12",
+   "latest_report": "2026-07-23",
+   "status": "increased",
+   "history": "2026/5に5.11%で新規、7月に9.78%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E35393"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "3864",
+   "name_ja": "三菱製紙",
+   "sector": "パルプ・紙",
+   "size": "small",
+   "ownership_pct": 6.12,
+   "peak_pct": 6.12,
+   "est_cost_jpy": null,
+   "first_seen": "2026-07-21",
+   "latest_report": "2026-08-05",
+   "status": "increased",
+   "history": "2026/7に5.03%で新規、8月に6.12%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E35393"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "9006",
+   "name_ja": "京浜急行電鉄",
+   "sector": "陸運",
+   "size": "large",
+   "ownership_pct": 9.14,
+   "peak_pct": 9.14,
+   "est_cost_jpy": null,
+   "first_seen": "2025-02-20",
+   "latest_report": "2026-07-06",
+   "status": "increased",
+   "history": "2025/2に5.11%で新規。段階的に買い増し、9.14%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/9006"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスイレブンス等（共同）",
+   "code": "4088",
+   "name_ja": "エア・ウォーター",
+   "sector": "化学・素材",
+   "size": "mid",
+   "ownership_pct": 6.88,
+   "peak_pct": 6.88,
+   "est_cost_jpy": null,
+   "first_seen": "2026-05-18",
+   "latest_report": "2026-05-22",
+   "status": "increased",
+   "history": "2026/5に5.86%で新規、直後に6.88%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E35393"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックス各社（共同）",
+   "code": "7278",
+   "name_ja": "エクセディ",
+   "sector": "自動車",
+   "size": "mid",
+   "ownership_pct": 7.98,
+   "peak_pct": 22.45,
+   "est_cost_jpy": null,
+   "first_seen": "2024-06-17",
+   "latest_report": "2026-10-01",
+   "status": "reduced",
+   "history": "2024/11に22.45%でピーク。2025年以降は売却が続き、7.98%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/7278"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "エスグラントコーポレーション等（共同）",
+   "code": "6770",
+   "name_ja": "アルプスアルパイン",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 8.67,
+   "peak_pct": 18.23,
+   "est_cost_jpy": null,
+   "first_seen": "2023-01-31",
+   "latest_report": "2026-06-04",
+   "status": "reduced",
+   "history": "2025/6に18.23%でピーク。その後売却し、8.67%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/6770"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "南青山不動産等（共同）",
+   "code": "1822",
+   "name_ja": "大豊建設",
+   "sector": "建設",
+   "size": "small",
+   "ownership_pct": 7.6,
+   "peak_pct": 43.36,
+   "est_cost_jpy": null,
+   "first_seen": "2021-09-14",
+   "latest_report": "2026-10-05",
+   "status": "reduced",
+   "history": "2022/6に43.36%でピーク。2025年以降は段階的に売却し、7.60%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/1822"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "エスグラントコーポレーション等（共同）",
+   "code": "1518",
+   "name_ja": "三井松島ホールディングス",
+   "sector": "鉱業",
+   "size": "small",
+   "ownership_pct": 13.96,
+   "peak_pct": 38.18,
+   "est_cost_jpy": null,
+   "first_seen": "2024-05-13",
+   "latest_report": "2026-06-12",
+   "status": "holding",
+   "history": "2025/7に38.18%。8月の短期大量譲渡で13%台へ下がった。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/1518"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスファースト等",
+   "code": "8141",
+   "name_ja": "新光商事",
+   "sector": "卸売",
+   "size": "small",
+   "ownership_pct": 4.53,
+   "peak_pct": 15.66,
+   "first_seen": "2024-09-13",
+   "latest_report": "2026-06-03",
+   "status": "exited",
+   "history": "2026/4に15.66%。5〜6月に急いで売却し、5%未満に。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/issuer/8141"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "murakami",
+   "entity": "シティインデックスファースト等",
+   "code": "4676",
+   "name_ja": "フジ・メディア・ホールディングス",
+   "sector": "情報通信",
+   "size": "large",
+   "ownership_pct": 4.62,
+   "peak_pct": 17.95,
+   "latest_report": "2026-04-15",
+   "status": "exited",
+   "history": "2026/2に17.95%。4月に4.62%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E40184"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "9107",
+   "name_ja": "川崎汽船",
+   "sector": "海運",
+   "size": "large",
+   "ownership_pct": 35.84,
+   "peak_pct": 38.52,
+   "latest_report": "2026-06-09",
+   "status": "reduced",
+   "history": "長期で保有する筆頭株主。38.52%前後から、2026/6に35.84%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "7752",
+   "name_ja": "リコー",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 24.77,
+   "peak_pct": 24.77,
+   "latest_report": "2026-06-15",
+   "status": "holding",
+   "history": "2024年の約16%から段階的に買い増し、24.77%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "8750",
+   "name_ja": "第一生命ホールディングス",
+   "sector": "保険",
+   "size": "large",
+   "ownership_pct": 10.99,
+   "peak_pct": 10.99,
+   "latest_report": "2026-02-27",
+   "status": "holding",
+   "history": "10.99%で長期保有。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "3401",
+   "name_ja": "帝人",
+   "sector": "化学・素材",
+   "size": "mid",
+   "ownership_pct": 19.26,
+   "peak_pct": 19.26,
+   "latest_report": "2026-04-21",
+   "status": "increased",
+   "history": "2024年の約7.7%から19.26%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "4902",
+   "name_ja": "コニカミノルタ",
+   "sector": "電機",
+   "size": "mid",
+   "ownership_pct": 10.6,
+   "peak_pct": 10.6,
+   "first_seen": "2024-10-22",
+   "latest_report": "2026-06-02",
+   "status": "increased",
+   "history": "2024/10に5.81%で新規、10.60%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "7740",
+   "name_ja": "タムロン",
+   "sector": "精密機器",
+   "size": "mid",
+   "ownership_pct": 18.54,
+   "peak_pct": 18.54,
+   "latest_report": "2026-10-08",
+   "status": "increased",
+   "history": "2025年の約12%から18.54%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "3104",
+   "name_ja": "富士紡ホールディングス",
+   "sector": "化学・素材",
+   "size": "small",
+   "ownership_pct": 20.76,
+   "peak_pct": 20.76,
+   "latest_report": "2026-10-05",
+   "status": "increased",
+   "history": "2024年の約13.5%から20.76%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "effissimo",
+   "entity": "Effissimo Capital Management",
+   "code": "5741",
+   "name_ja": "UACJ",
+   "sector": "非鉄金属",
+   "size": "mid",
+   "ownership_pct": 24.28,
+   "peak_pct": 24.28,
+   "latest_report": "2026-08-24",
+   "status": "holding",
+   "history": "2024年の約18%から24.28%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11852"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "4452",
+   "name_ja": "花王",
+   "sector": "化粧品・日用品",
+   "size": "large",
+   "ownership_pct": 12.63,
+   "peak_pct": 12.63,
+   "latest_report": "2026-05-20",
+   "status": "holding",
+   "history": "2026/3に9.90%から12.49%へ急いで買い増し、12.63%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "2371",
+   "name_ja": "カカクコム",
+   "sector": "情報通信",
+   "size": "mid",
+   "ownership_pct": 19.52,
+   "peak_pct": 19.52,
+   "latest_report": "2026-08-27",
+   "status": "holding",
+   "history": "2026/3の7.94%から5月に19.52%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "2492",
+   "name_ja": "インフォマート",
+   "sector": "情報通信",
+   "size": "small",
+   "ownership_pct": 23.61,
+   "peak_pct": 23.61,
+   "first_seen": "2026-07-02",
+   "latest_report": "2026-10-08",
+   "status": "increased",
+   "history": "2026/7に5.07%で新規。約3カ月で23.61%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "2413",
+   "name_ja": "エムスリー",
+   "sector": "人材・サービス",
+   "size": "large",
+   "ownership_pct": 9.48,
+   "peak_pct": 9.48,
+   "first_seen": "2026-08-10",
+   "latest_report": "2026-10-08",
+   "status": "increased",
+   "history": "2026/8に5.03%で新規、10月に9.48%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "2175",
+   "name_ja": "エス・エム・エス",
+   "sector": "人材・サービス",
+   "size": "mid",
+   "ownership_pct": 26.97,
+   "peak_pct": 26.97,
+   "latest_report": "2026-09-16",
+   "status": "increased",
+   "history": "2026/5の18.30%から9月に26.97%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "4967",
+   "name_ja": "小林製薬",
+   "sector": "化粧品・日用品",
+   "size": "mid",
+   "ownership_pct": 14.41,
+   "peak_pct": 14.41,
+   "latest_report": "2026-09-09",
+   "status": "increased",
+   "history": "長期のキャンペーン先。14.41%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "9468",
+   "name_ja": "KADOKAWA",
+   "sector": "ゲーム・エンタメ",
+   "size": "mid",
+   "ownership_pct": 15.25,
+   "peak_pct": 15.25,
+   "first_seen": "2026-03-19",
+   "latest_report": "2026-06-23",
+   "status": "increased",
+   "history": "2026/3に8.86%で新規、15.25%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "6594",
+   "name_ja": "ニデック",
+   "sector": "電機",
+   "size": "large",
+   "ownership_pct": 7.97,
+   "peak_pct": 7.97,
+   "first_seen": "2026-03-11",
+   "latest_report": "2026-09-16",
+   "status": "increased",
+   "history": "2026/3に6.74%で新規、9月に7.97%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E31883"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "oasis",
+   "entity": "Oasis Management",
+   "code": "6890",
+   "name_ja": "フェローテック",
+   "sector": "電子部品・半導体",
+   "size": "mid",
+   "ownership_pct": 6.57,
+   "peak_pct": 8.5,
+   "est_cost_jpy": 3951,
+   "cost_basis_note": "初回報告：取得資金159.5億円÷4,038,389株",
+   "first_seen": "2025-12-17",
+   "latest_report": "2026-06-25",
+   "status": "reduced",
+   "history": "2025/12に8.50%で新規。2026/6に6.57%へ売却。",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XAP1.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "3d",
+   "entity": "3D Investment Partners",
+   "code": "3086",
+   "name_ja": "J.フロント リテイリング",
+   "sector": "小売",
+   "size": "large",
+   "ownership_pct": 11.63,
+   "peak_pct": 11.63,
+   "first_seen": "2026-06-19",
+   "latest_report": "2026-09-10",
+   "status": "increased",
+   "history": "2026/6に5.10%で新規、9月に11.63%。",
+   "sources": [
+    "https://maonline.jp/kabuhoyu/sh-s100yfl5"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "3d",
+   "entity": "3D Investment Partners",
+   "code": "9024",
+   "name_ja": "西武ホールディングス",
+   "sector": "陸運",
+   "size": "large",
+   "ownership_pct": 13.91,
+   "peak_pct": 13.91,
+   "first_seen": "2024-05-14",
+   "latest_report": "2026-07-09",
+   "status": "increased",
+   "history": "2024/5に5.01%で新規。2026/5〜7に13.91%まで急いで買い増し。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E33309"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "3d",
+   "entity": "3D Investment Partners",
+   "code": "9684",
+   "name_ja": "スクウェア・エニックス・ホールディングス",
+   "sector": "ゲーム・エンタメ",
+   "size": "mid",
+   "ownership_pct": 18.53,
+   "peak_pct": 18.53,
+   "first_seen": "2025-04-28",
+   "latest_report": "2026-03-03",
+   "status": "holding",
+   "history": "2025/4に5.47%で新規、18.53%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E33309"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "3d",
+   "entity": "3D Investment Partners",
+   "code": "8129",
+   "name_ja": "東邦ホールディングス",
+   "sector": "卸売",
+   "size": "mid",
+   "ownership_pct": 21.19,
+   "peak_pct": 21.19,
+   "first_seen": "2024-06-24",
+   "latest_report": "2025-08-27",
+   "status": "holding",
+   "history": "2024/6に5.06%で新規、21.19%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E33309"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "3d",
+   "entity": "3D Investment Partners",
+   "code": "2501",
+   "name_ja": "サッポロホールディングス",
+   "sector": "食品",
+   "size": "mid",
+   "ownership_pct": 19.44,
+   "peak_pct": 19.44,
+   "first_seen": "2023-10-19",
+   "latest_report": "2025-01-23",
+   "status": "holding",
+   "history": "2023/10に5.09%で新規、19.44%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E33309"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "elliott",
+   "entity": "Elliott Investment Management",
+   "code": "9147",
+   "name_ja": "NIPPON EXPRESSホールディングス",
+   "sector": "陸運",
+   "size": "large",
+   "ownership_pct": 6.05,
+   "peak_pct": 6.05,
+   "first_seen": "2026-04-28",
+   "latest_report": "2026-05-20",
+   "status": "increased",
+   "history": "2026/4に5.04%で新規、5月に6.05%。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E35450"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "elliott",
+   "entity": "Elliott Investment Management",
+   "code": "6201",
+   "name_ja": "豊田自動織機",
+   "sector": "機械",
+   "size": "large",
+   "ownership_pct": 0.0,
+   "peak_pct": 7.14,
+   "first_seen": "2025-12-10",
+   "latest_report": "2026-03-30",
+   "status": "exited",
+   "history": "非公開化TOBに反対して最大7.14%。TOB成立後は0%。",
+   "sources": [
+    "https://maonline.jp/kabuhoyu/sh-s100x96d"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "valueact",
+   "entity": "ValueAct Capital（共同）",
+   "code": "3994",
+   "name_ja": "マネーフォワード",
+   "sector": "情報通信",
+   "size": "mid",
+   "ownership_pct": 17.94,
+   "peak_pct": 17.94,
+   "est_cost_jpy": 4298,
+   "cost_basis_note": "初回報告：取得資金134.1億円÷3,120,300株",
+   "first_seen": "2025-07-24",
+   "latest_report": "2026-07-03",
+   "status": "increased",
+   "history": "2025/7に5.62%で新規、17.94%まで。",
+   "sources": [
+    "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100WEIB.pdf"
+   ],
+   "confidence": "high"
+  },
+  {
+   "investor_id": "valueact",
+   "entity": "ValueAct Capital（共同）",
+   "code": "2531",
+   "name_ja": "宝ホールディングス",
+   "sector": "食品",
+   "size": "mid",
+   "ownership_pct": 19.01,
+   "peak_pct": 19.01,
+   "first_seen": "2025-08-20",
+   "latest_report": "2026-05-12",
+   "status": "increased",
+   "history": "2025/8に9.84%で新規、19.01%まで。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34138"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "valueact",
+   "entity": "ValueAct Capital（共同）",
+   "code": "5929",
+   "name_ja": "三和ホールディングス",
+   "sector": "建設",
+   "size": "mid",
+   "ownership_pct": 7.54,
+   "peak_pct": 7.54,
+   "first_seen": "2024-09-25",
+   "latest_report": "2026-05-28",
+   "status": "increased",
+   "history": "2024/9に5.94%で新規、7.54%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34138"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "valueact",
+   "entity": "ValueAct Capital（共同）",
+   "code": "5334",
+   "name_ja": "日本特殊陶業",
+   "sector": "自動車",
+   "size": "large",
+   "ownership_pct": 5.27,
+   "peak_pct": 5.27,
+   "first_seen": "2026-02-12",
+   "latest_report": "2026-02-12",
+   "status": "new",
+   "history": "2026/2に5.27%で新規。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E34138"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund",
+   "code": "8105",
+   "name_ja": "Bitcoin Japan",
+   "sector": "卸売",
+   "size": "small",
+   "ownership_pct": 49.54,
+   "peak_pct": 51.73,
+   "first_seen": "2026-08-10",
+   "latest_report": "2026-08-28",
+   "status": "reduced",
+   "history": "2026/8に50.19%で新規（未行使分を含む）、49.54%へ。資金調達の引受けによる保有。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund",
+   "code": "4598",
+   "name_ja": "Delta-Fly Pharma",
+   "sector": "医薬品",
+   "size": "small",
+   "ownership_pct": 41.97,
+   "peak_pct": 43.2,
+   "first_seen": "2026-08-17",
+   "latest_report": "2026-08-28",
+   "status": "reduced",
+   "history": "MSワラントの割当先。行使と売却が続いている。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund",
+   "code": "4883",
+   "name_ja": "モダリス",
+   "sector": "医薬品",
+   "size": "small",
+   "ownership_pct": 15.16,
+   "peak_pct": 22.69,
+   "first_seen": "2026-06-19",
+   "latest_report": "2026-08-18",
+   "status": "reduced",
+   "history": "2026/6に22.69%で新規。約2カ月で15.16%へ。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund",
+   "code": "6522",
+   "name_ja": "アスタリスク",
+   "sector": "電機",
+   "size": "small",
+   "ownership_pct": 5.67,
+   "peak_pct": 12.58,
+   "first_seen": "2026-07-21",
+   "latest_report": "2026-08-25",
+   "status": "reduced",
+   "history": "2026/7に12.58%。約1カ月で5.67%（短期大量譲渡）。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  }
+ ]
+}
