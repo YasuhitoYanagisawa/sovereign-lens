@@ -59,7 +59,11 @@ async def list_large_holding_filings(
             if r.status_code != 200:
                 log.warning("edinet list %s -> %s", day, r.status_code)
                 continue
-            for doc in (r.json() or {}).get("results") or []:
+            body = r.json() or {}
+            status = str((body.get("metadata") or {}).get("status") or body.get("StatusCode") or "200")
+            if status != "200":
+                raise RuntimeError(f"EDINET API returned status {status} (check EDINET_API_KEY)")
+            for doc in body.get("results") or []:
                 if doc.get("docTypeCode") not in LARGE_HOLDING_DOC_TYPES:
                     continue
                 for inv_id, kws in keywords_by_investor.items():

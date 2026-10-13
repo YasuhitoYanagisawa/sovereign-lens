@@ -22,6 +22,9 @@ from .governance import GovernancePlugin, audit, screen_text
 from .sources import nbim
 
 logging.basicConfig(level=logging.INFO)
+# httpx logs full request URLs at INFO; EDINET puts the API key in the query string.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 log = logging.getLogger("sovereign-lens")
 APP_NAME = "sovereign_lens"
 STATIC = Path(__file__).parent / "static"

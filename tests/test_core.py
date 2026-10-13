@@ -98,3 +98,9 @@ def test_nbim_parser():
     rows = nbim._japan_equities(payload)
     assert len(rows) == 1 and rows[0]["code"] == "7974" and rows[0]["ownership_pct"] == 1.9
     assert nbim.normalize_name("Nintendo Co., Ltd.") == "nintendo"
+
+
+def test_httpx_logging_silenced():
+    import logging
+    import app.main  # noqa: F401
+    assert logging.getLogger("httpx").getEffectiveLevel() >= logging.WARNING
