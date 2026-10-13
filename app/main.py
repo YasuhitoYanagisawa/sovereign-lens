@@ -104,6 +104,18 @@ def _get_runner():
     return _runner, _session_service
 
 
+@app.on_event("startup")
+async def _warm_model() -> None:
+    """Resolve the model in the background so the first user request doesn't pay for the probe."""
+    if os.environ.get("GOOGLE_GENAI_USE_VERTEXAI") or os.environ.get("GOOGLE_API_KEY"):
+        async def _go():
+            try:
+                await _resolve_model()
+            except Exception as e:  # noqa: BLE001
+                log.warning("model warmup failed: %s", e)
+        asyncio.create_task(_go())
+
+
 # ---------------------------------------------------------------- rate limit (cost guard)
 _hits: dict[str, deque] = defaultdict(deque)
 RATE_N = int(os.environ.get("AGENT_RATE_LIMIT", "8"))
@@ -139,7 +151,13 @@ class AgentRequest(BaseModel):
 # ---------------------------------------------------------------- REST
 @app.get("/api/health")
 async def health():
-    reviewer = f"GMI Cloud / {plan_reviewer.model.model}" if isinstance(plan_reviewer.model, GmiLlm) else (_model_ready or str(plan_reviewer.model))
+    if isinstance(plan_reviewer.model, GmiLlm):
+        m = plan_reviewer.model
+        reviewer = f"GMI Cloud / {m.model}"
+        if m.last_provider.startswith("gemini:"):
+            reviewer += f"（GMI応答なしのため {m.fallback_model} で代替中）"
+    else:
+        reviewer = _model_ready or str(plan_reviewer.model)
     return {"ok": True, "model": _model_ready or root_agent.model, "reviewer": reviewer, "edinet": bool(os.environ.get("EDINET_API_KEY"))}
 
 
