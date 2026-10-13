@@ -115,7 +115,7 @@
     "EVO FUND",
     "エボ ファンド"
    ],
-   "profile": "行使価額修正条項付き新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株は長期保有せず、市場で売却する方針と開示されている。保有比率が高く見えるのは未行使分を含むためで、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。"
+   "profile": "行使価額修正条項付き新株予約権（MSワラント）やMSCBを引き受ける資金調達型の投資家。行使で得た株は長期保有せず、市場で売却する方針と開示されている。保有比率が高く見えるのは未行使分を含むためで、株価の下落圧力になりやすい。追随の対象外とし、警告のためだけに表示する。 2026年10月時点で22社に5%超（潜在株ベース）の報告がある。"
   }
  ],
  "holdings": [
@@ -844,17 +844,15 @@
   },
   {
    "investor_id": "evo",
-   "entity": "Evo Fund",
-   "code": "8105",
-   "name_ja": "Bitcoin Japan",
-   "sector": "卸売",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "6731",
+   "name_ja": "ピクセラ",
+   "sector": "小型株（資金調達）",
    "size": "small",
-   "ownership_pct": 49.54,
-   "peak_pct": 51.73,
-   "first_seen": "2026-08-10",
-   "latest_report": "2026-08-28",
-   "status": "reduced",
-   "history": "2026/8に50.19%で新規（未行使分を含む）、49.54%へ。資金調達の引受けによる保有。",
+   "ownership_pct": 59.94,
+   "latest_report": "2026-10-13",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
    "sources": [
     "https://ufocatch.com/large-shareholding/holder/E11943"
    ],
@@ -862,17 +860,63 @@
   },
   {
    "investor_id": "evo",
-   "entity": "Evo Fund",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "254A",
+   "name_ja": "AIフュージョンキャピタルグループ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 7.84,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3672",
+   "name_ja": "オルトプラス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 42.34,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "7138",
+   "name_ja": "TORICO",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 34.35,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
    "code": "4598",
    "name_ja": "Delta-Fly Pharma",
-   "sector": "医薬品",
+   "sector": "小型株（資金調達）",
    "size": "small",
-   "ownership_pct": 41.97,
-   "peak_pct": 43.2,
-   "first_seen": "2026-08-17",
-   "latest_report": "2026-08-28",
-   "status": "reduced",
-   "history": "MSワラントの割当先。行使と売却が続いている。",
+   "ownership_pct": 22.55,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
    "sources": [
     "https://ufocatch.com/large-shareholding/holder/E11943"
    ],
@@ -880,17 +924,111 @@
   },
   {
    "investor_id": "evo",
-   "entity": "Evo Fund",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "8105",
+   "name_ja": "Bitcoin Japan",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 47.74,
+   "latest_report": "2026-10-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3664",
+   "name_ja": "WIZE",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 20.44,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "6573",
+   "name_ja": "CRAVIA",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 14.9,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3189",
+   "name_ja": "ANAPホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 23.9,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "7603",
+   "name_ja": "ジーイエット",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 12.98,
+   "latest_report": "2026-10-07",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "4582",
+   "name_ja": "シンバイオ製薬",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 55.34,
+   "latest_report": "2026-10-02",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
    "code": "4883",
    "name_ja": "モダリス",
-   "sector": "医薬品",
+   "sector": "小型株（資金調達）",
    "size": "small",
-   "ownership_pct": 15.16,
-   "peak_pct": 22.69,
-   "first_seen": "2026-06-19",
-   "latest_report": "2026-08-18",
-   "status": "reduced",
-   "history": "2026/6に22.69%で新規。約2カ月で15.16%へ。",
+   "ownership_pct": 8.96,
+   "latest_report": "2026-09-28",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
    "sources": [
     "https://ufocatch.com/large-shareholding/holder/E11943"
    ],
@@ -898,17 +1036,159 @@
   },
   {
    "investor_id": "evo",
-   "entity": "Evo Fund",
-   "code": "6522",
-   "name_ja": "アスタリスク",
-   "sector": "電機",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "2762",
+   "name_ja": "サンコーマーケティングフーズ",
+   "sector": "小型株（資金調達）",
    "size": "small",
-   "ownership_pct": 5.67,
-   "peak_pct": 12.58,
-   "first_seen": "2026-07-21",
-   "latest_report": "2026-08-25",
-   "status": "reduced",
-   "history": "2026/7に12.58%。約1カ月で5.67%（短期大量譲渡）。",
+   "ownership_pct": 25.68,
+   "latest_report": "2026-09-25",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "6699",
+   "name_ja": "ダイヤモンドエレクトリックホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 26.18,
+   "latest_report": "2026-09-24",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "9878",
+   "name_ja": "セキド",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 36.67,
+   "latest_report": "2026-09-18",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "2721",
+   "name_ja": "ジェイホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 19.26,
+   "latest_report": "2026-09-08",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3667",
+   "name_ja": "enish",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 19.52,
+   "latest_report": "2026-09-02",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "5341",
+   "name_ja": "ASAHI EITOホールディングス",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 29.82,
+   "latest_report": "2026-07-24",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "4591",
+   "name_ja": "リボミック",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 28.68,
+   "latest_report": "2026-06-22",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3133",
+   "name_ja": "海帆",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 45.85,
+   "latest_report": "2026-05-26",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "3350",
+   "name_ja": "メタプラネット",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 20.82,
+   "latest_report": "2026-05-15",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
+   "sources": [
+    "https://ufocatch.com/large-shareholding/holder/E11943"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "investor_id": "evo",
+   "entity": "Evo Fund（共同保有者含む）",
+   "code": "2586",
+   "name_ja": "フルッタフルッタ",
+   "sector": "小型株（資金調達）",
+   "size": "small",
+   "ownership_pct": 14.16,
+   "latest_report": "2025-11-28",
+   "status": "holding",
+   "history": "MSワラント／新株予約権の引受けによる保有。比率は未行使の新株予約権を含む潜在株ベースで、行使と市場売却で短期間に下がる傾向がある。",
    "sources": [
     "https://ufocatch.com/large-shareholding/holder/E11943"
    ],

@@ -135,3 +135,10 @@ def test_research_cache_key_uses_codes():
     k1 = GovernancePlugin._cache_key("rationale_researcher", {"request": "ネクソン 3659 をPIFが選んだ理由"})
     k2 = GovernancePlugin._cache_key("rationale_researcher", {"request": "PIFがネクソン(3659)に投資した背景を調べて"})
     assert k1 == k2 == "rationale_researcher:3659"
+
+
+def test_evo_full_list_flagged():
+    u = {s["code"]: s for s in analytics.universe(PX)}
+    sanko = u["2762"]
+    assert sanko["categories"] == ["financing"] and sanko["candidate"] is False and sanko["warning"]
+    assert sum(1 for s in u.values() if "financing" in s["categories"]) >= 20

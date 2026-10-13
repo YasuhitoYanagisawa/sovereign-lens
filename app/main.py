@@ -194,7 +194,13 @@ async def api_quotes(codes: str):
             "name_ja": t["name_ja"] if t else None,
             "timing": t["timing"] if t else None,
             "momentum": t["momentum"] if t else None,
-            "fund_alert": (f"ファンドが一部売却（{', '.join(h['investor_short'] for h in t['holders'] if h['status'] in ('reduced','exited'))}）" if t and any(h["status"] in ("reduced", "exited") for h in t["holders"]) else None),
+            "fund_alert": (
+                "資金調達型ファンド（EVO等）が保有：新株予約権の行使と売却で株価が下がりやすい"
+                if t and t.get("warning")
+                else f"ファンドが一部売却（{', '.join(h['investor_short'] for h in t['holders'] if h['status'] in ('reduced','exited'))}）"
+                if t and any(h["status"] in ("reduced", "exited") for h in t["holders"])
+                else None
+            ),
         }
     return {"quotes": out}
 
