@@ -319,6 +319,13 @@ async def api_agent(req: AgentRequest, request: Request):
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
+_ASSET_V = str(int(max((STATIC / f).stat().st_mtime for f in ("app.js", "style.css", "index.html"))))
+
+
 @app.get("/")
 async def index():
-    return FileResponse(STATIC / "index.html")
+    """Serve index with cache-busted asset URLs so a redeploy is picked up immediately."""
+    from fastapi.responses import HTMLResponse
+
+    html = (STATIC / "index.html").read_text(encoding="utf-8").replace("__V__", _ASSET_V)
+    return HTMLResponse(html, headers={"Cache-Control": "no-cache"})
