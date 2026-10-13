@@ -26,7 +26,7 @@ Sovereign Lens は、政府系ファンドの日本株投資を**自律的に収
 - 候補の採点と、銘柄ごとの詳細資料の作成
 - Google検索グラウンディングを使った「ファンドが買った理由」の調査（事実と推測を分け、出典付き）
 - 配分計算
-- 独立した審査エージェントによるチェック。指摘があれば除外銘柄を調整して作り直します。
+- 独立した審査エージェントによるチェック。指摘があれば除外銘柄を調整して作り直します。審査役はGMI Cloud上のGemini以外のモデルで動かし、同じモデル系統どうしで誤りを見逃す「相関エラー」を減らしています。
 
 **2. 一次情報に基づく「取得コスト」と「保有期間」**
 - EDINETの大量保有報告書から、保有比率の推移と取得資金を抽出します。株式分割を調整したうえで「推定取得単価」を算出し、現在値と比べます（例：PIFのネクソンは推定約3,005円）。
@@ -52,7 +52,7 @@ Sovereign Lens は、政府系ファンドの日本株投資を**自律的に収
 - Secret Manager と最小権限のサービスアカウントを使い、Cloud Run は0〜3インスタンスに制限してコストを抑えています。
 
 **使用技術**
-Cloud Run / Gemini（Vertex AI） / Agent Development Kit（マルチエージェント、AgentTool、Plugin） / Google検索グラウンディング / Cloud Trace / Cloud Logging / Secret Manager / Cloud Build / EDINET API v2 / NBIM公開API
+Cloud Run / Gemini 3.8 Flash（Vertex AI） / Agent Development Kit（マルチエージェント、AgentTool、Plugin） / Google検索グラウンディング / Cloud Trace / Cloud Logging / Secret Manager / Cloud Build / EDINET API v2 / NBIM公開API / GMI Cloud（独立審査用の別系統モデル）
 
 ## 動作確認の方法
 ログインは不要です。デプロイURLを開いて、次の手順で確認できます。
