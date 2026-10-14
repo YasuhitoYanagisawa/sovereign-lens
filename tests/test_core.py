@@ -270,3 +270,34 @@ def test_fallback_llm_fails_over_on_429(monkeypatch):
     assert out[0].content.parts[0].text == "ok"
     assert calls == [("gemini-3.8-flash", True), ("gemini-2.5-flash", False)]
     assert llm.last_model == "gemini-2.5-flash"
+
+
+def test_fallback_llm_fails_over_on_slow_first_chunk(monkeypatch):
+    import asyncio
+
+    from google.adk.models.llm_request import LlmRequest
+    from google.adk.models.llm_response import LlmResponse
+    from google.genai import types
+
+    from app import fallback_llm
+
+    class FakeGemini:
+        def __init__(self, model, retry_options=None):
+            self.model = model
+
+        async def generate_content_async(self, req, stream=False):
+            if self.model == "slow":
+                await asyncio.sleep(5)
+            yield LlmResponse(content=types.Content(role="model", parts=[types.Part(text=self.model)]))
+
+    monkeypatch.setattr(fallback_llm, "Gemini", FakeGemini)
+    monkeypatch.setattr(fallback_llm, "FIRST_CHUNK_TIMEOUT", 0.2)
+    fallback_llm._cooldown.clear()
+    llm = fallback_llm.FallbackGemini(model="slow", chain=["fast"])
+
+    async def go():
+        return [r async for r in llm.generate_content_async(LlmRequest(model="slow", config=types.GenerateContentConfig()))]
+
+    out = asyncio.run(go())
+    assert out[0].content.parts[0].text == "fast"
+    assert llm._order()[0] == "fast"  # slow model is cooled down for later calls

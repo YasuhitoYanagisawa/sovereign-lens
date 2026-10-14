@@ -372,7 +372,8 @@ async def api_agent(req: AgentRequest, request: Request):
             plan = (s.state or {}).get("plan") if s else None
             if plan:
                 yield _sse("plan", plan)
-            yield _sse("done", {"elapsed_s": round(time.time() - t0, 1), "tokens": usage, "model": model})
+            served = getattr(root_agent.model, "last_model", "") or model
+            yield _sse("done", {"elapsed_s": round(time.time() - t0, 1), "tokens": usage, "model": served if served == model else f"{served}（{model}混雑のため自動切替）"})
             audit("agent_run", ip=ip, elapsed_s=round(time.time() - t0, 1), tokens=usage, has_plan=bool(plan))
         except asyncio.CancelledError:
             raise

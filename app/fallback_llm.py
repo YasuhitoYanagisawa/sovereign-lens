@@ -7,7 +7,9 @@ more. This wrapper retries briefly, then moves to the next model in the chain
 """
 from __future__ import annotations
 
+import asyncio
 import logging
+import os
 import time
 from typing import AsyncGenerator
 
@@ -18,6 +20,7 @@ from google.genai import types
 
 log = logging.getLogger(__name__)
 _RETRYABLE = ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE", "overloaded", "DEADLINE_EXCEEDED")
+FIRST_CHUNK_TIMEOUT = float(os.environ.get("FIRST_CHUNK_TIMEOUT", "15"))
 _cooldown: dict[str, float] = {}  # model -> until (skip a model that just failed)
 
 
@@ -48,10 +51,21 @@ class FallbackGemini(BaseLlm):
                 cfg.thinking_config = None  # thinking_level is a Gemini 3 setting
             g = Gemini(model=m, retry_options=types.HttpRetryOptions(attempts=2, initial_delay=1.0, max_delay=4.0))
             yielded = False
+            agen = g.generate_content_async(req, stream=stream)
             try:
-                async for resp in g.generate_content_async(req, stream=stream):
+                try:
+                    # a congested model can take a minute to start answering: fail over instead
+                    first = await asyncio.wait_for(agen.__anext__(), timeout=(FIRST_CHUNK_TIMEOUT if stream else FIRST_CHUNK_TIMEOUT * 3) if i < len(models) - 1 else None)
+                except StopAsyncIteration:
+                    first = None
+                except asyncio.TimeoutError:
+                    await agen.aclose()
+                    raise TimeoutError(f"DEADLINE_EXCEEDED: no response from {m}")
+                if first is not None:
                     yielded = True
-                    yield resp
+                    yield first
+                    async for resp in agen:
+                        yield resp
                 self.last_model = m
                 if i:
                     log.warning("served by fallback model %s", m)
@@ -59,7 +73,7 @@ class FallbackGemini(BaseLlm):
             except Exception as e:  # noqa: BLE001
                 if yielded or not _retryable(e) or i == len(models) - 1:
                     raise
-                _cooldown[m] = time.time() + 120
+                _cooldown[m] = time.time() + 300
                 last_err = e
                 log.warning("model %s busy (%s); failing over", m, str(e)[:120])
         if last_err:
