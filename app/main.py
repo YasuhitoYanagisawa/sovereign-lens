@@ -75,11 +75,14 @@ async def _resolve_model() -> str:
         # agentic tool loop: keep reasoning light for latency; the numbers come from deterministic tools
         level = os.environ.get("THINKING_LEVEL", "LOW").upper()
         thinking = types.ThinkingConfig(thinking_level=getattr(types.ThinkingLevel, level, types.ThinkingLevel.LOW))
+    from .fallback_llm import FallbackGemini
+
+    chain = [m for m in dict.fromkeys(candidates) if m != _model_ready]
     for a in (root_agent, rationale_researcher, plan_reviewer):
         if isinstance(a.model, GmiLlm):
             a.model.fallback_model = _model_ready
         else:
-            a.model = _model_ready
+            a.model = FallbackGemini(model=_model_ready, chain=chain)
         if thinking is not None and a.generate_content_config is not None:
             a.generate_content_config = a.generate_content_config.model_copy(update={"thinking_config": thinking})
     audit("model_selected", model=_model_ready)

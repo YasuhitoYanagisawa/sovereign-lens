@@ -235,3 +235,38 @@ def test_backtest_despike():
     out = _despike([(x, v, v) for x, v in zip(d, vals)])
     kept = [r[2] for r in out]
     assert 10.0 not in kept and kept.count(60.0) >= 12 and len(out) >= 34
+
+
+def test_fallback_llm_fails_over_on_429(monkeypatch):
+    import asyncio
+
+    from google.adk.models.llm_request import LlmRequest
+    from google.adk.models.llm_response import LlmResponse
+    from google.genai import types
+
+    from app import fallback_llm
+
+    calls = []
+
+    class FakeGemini:
+        def __init__(self, model, retry_options=None):
+            self.model = model
+
+        async def generate_content_async(self, req, stream=False):
+            calls.append((self.model, req.config.thinking_config is not None))
+            if self.model == "gemini-3.8-flash":
+                raise RuntimeError("429 RESOURCE_EXHAUSTED")
+            yield LlmResponse(content=types.Content(role="model", parts=[types.Part(text="ok")]))
+
+    monkeypatch.setattr(fallback_llm, "Gemini", FakeGemini)
+    fallback_llm._cooldown.clear()
+    llm = fallback_llm.FallbackGemini(model="gemini-3.8-flash", chain=["gemini-2.5-flash"])
+    req = LlmRequest(model="gemini-3.8-flash", config=types.GenerateContentConfig(thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.LOW)))
+
+    async def go():
+        return [r async for r in llm.generate_content_async(req)]
+
+    out = asyncio.run(go())
+    assert out[0].content.parts[0].text == "ok"
+    assert calls == [("gemini-3.8-flash", True), ("gemini-2.5-flash", False)]
+    assert llm.last_model == "gemini-2.5-flash"
