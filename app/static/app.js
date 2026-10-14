@@ -174,7 +174,7 @@ $("#profile").addEventListener("submit", async (e) => {
   } catch {}
   let text = "";
   const base = traceHandlers($("#trace"), (d) => {
-    if (d.final) { text = d.text; mark("report", "done"); $("#report").innerHTML = md(text); }
+    if (d.final) { if ((d.text || "").length >= text.length * 0.8) text = d.text; mark("report", "done"); $("#report").innerHTML = md(text); }
     else traceItem($("#trace"), "txt", `<em>${d.t}s</em> ${esc(d.text.slice(0, 120))}`);
   });
   await streamAgent({ profile: p }, {

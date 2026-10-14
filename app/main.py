@@ -350,6 +350,12 @@ async def api_agent(req: AgentRequest, request: Request):
                     usage["output"] += um.candidates_token_count or 0
                 if not ev.content or not ev.content.parts:
                     continue
+                texts = [p.text for p in ev.content.parts if p.text and not getattr(p, "thought", False)]
+                if texts and len(texts) > 1 and not ev.partial and ev.author == root_agent.name and ev.is_final_response():
+                    # some models split the final answer into several parts: send it whole
+                    final_text = "".join(texts)
+                    yield _sse("text", {"t": round(time.time() - t0, 1), "agent": ev.author, "text": final_text, "final": True})
+                    continue
                 for part in ev.content.parts:
                     if part.function_call and not ev.partial:
                         yield _sse("tool_call", {"t": round(time.time() - t0, 1), "agent": ev.author, "tool": part.function_call.name, "args": part.function_call.args})
