@@ -13,6 +13,10 @@ published: true
 - デモ：https://sovereign-lens-mhdvlbrwja-an.a.run.app （ログイン不要）
 - GitHub：https://github.com/YasuhitoYanagisawa/sovereign-lens
 
+まずは3分のデモ動画をご覧ください。
+
+@[youtube](YWmS8pZdD3U)
+
 下の画面は、300万円・バランス型で実行した結果です。即時試算が数秒で表示され、エージェントのレポートは書けた順に流れてきます。
 
 ![](https://raw.githubusercontent.com/YasuhitoYanagisawa/sovereign-lens/main/docs/img/plan.png)

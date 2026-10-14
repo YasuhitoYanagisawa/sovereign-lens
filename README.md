@@ -6,6 +6,10 @@
 
 第5回 Agentic AI Hackathon with Google Cloud への応募作品です。
 
+- デモ動画（3分）：https://youtu.be/YWmS8pZdD3U
+- デプロイ：https://sovereign-lens-mhdvlbrwja-an.a.run.app
+- 解説記事：https://zenn.dev/chattso_gpt/articles/sovereign-lens-swf-agent
+
 ![architecture](docs/architecture.png)
 
 ## 主な機能
