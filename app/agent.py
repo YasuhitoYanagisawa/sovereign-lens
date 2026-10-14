@@ -183,7 +183,7 @@ _SAFE = types.GenerateContentConfig(
     temperature=0.2,
     max_output_tokens=8192,
     safety_settings=[
-        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE),
+        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_ONLY_HIGH),
     ],
 )
 
