@@ -162,8 +162,9 @@ def record(durs: dict[str, float]) -> tuple[Path, list[tuple[str, float, float]]
         page.check('input[name="risk"][value="balanced"]')
         page.fill("#exclude", "")
         click("#runBtn")
-        page.wait_for_timeout(4000)
-        scroll_to(330, 1500)
+        page.wait_for_timeout(5000)  # instant preview (allocation) appears
+        page.evaluate("window.scrollTo({top: document.querySelector('.two').getBoundingClientRect().top + scrollY - 8, behavior: 'smooth'})")
+        page.wait_for_timeout(1500)
         try:
             page.wait_for_function("document.querySelector('#traceFoot').textContent.includes('完了')", timeout=300_000)
         except Exception as e:  # noqa: BLE001
