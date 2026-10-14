@@ -6,6 +6,7 @@ Requires a free API key (EDINET_API_KEY). Without it the agent falls back to see
 from __future__ import annotations
 
 import csv
+import asyncio
 import datetime as dt
 import io
 import logging
@@ -39,17 +40,34 @@ async def list_large_holding_filings(
     async with httpx.AsyncClient(timeout=30.0) as client:
         for i in range(days):
             day = end - dt.timedelta(days=i)
-            r = await client.get(
-                f"{API}/documents.json",
-                params={"date": day.isoformat(), "type": 2, "Subscription-Key": key},
-            )
+            r, body = None, {}
+            for wait in (0, 3, 8, 20):  # back off on EDINET rate limiting (429)
+                if wait:
+                    await asyncio.sleep(wait)
+                try:
+                    r = await client.get(
+                        f"{API}/documents.json",
+                        params={"date": day.isoformat(), "type": 2, "Subscription-Key": key},
+                    )
+                    body = (r.json() or {}) if r.status_code == 200 else {}
+                except Exception as e:  # noqa: BLE001 - one bad day must not abort the scan
+                    log.warning("edinet list %s failed: %s", day, type(e).__name__)
+                    r = None
+                    continue
+                st = str((body.get("metadata") or {}).get("status") or body.get("StatusCode") or r.status_code)
+                if r.status_code != 429 and st != "429":
+                    break
+            if r is None:
+                continue
             if r.status_code != 200:
                 log.warning("edinet list %s -> %s", day, r.status_code)
                 continue
-            body = r.json() or {}
             status = str((body.get("metadata") or {}).get("status") or body.get("StatusCode") or "200")
+            if status == "401":
+                raise RuntimeError("EDINET API returned 401 (check EDINET_API_KEY)")
             if status != "200":
-                raise RuntimeError(f"EDINET API returned status {status} (check EDINET_API_KEY)")
+                log.warning("edinet list %s metadata status %s", day, status)
+                continue
             for doc in body.get("results") or []:
                 if doc.get("docTypeCode") not in LARGE_HOLDING_DOC_TYPES:
                     continue

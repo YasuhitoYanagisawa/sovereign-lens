@@ -116,7 +116,11 @@ async def run_sync(days: int = 3, end: dt.date | None = None, max_docs: int = 15
     ov = load_overlay()
     seen = set(ov.get("docs_seen", []))
     kws = {i["id"]: i.get("edinet_filer_keywords", []) for i in analytics.investors()}
-    filings = await edinet.list_large_holding_filings(kws, days=days, end=end)
+    try:
+        filings = await edinet.list_large_holding_filings(kws, days=days, end=end)
+    except Exception as e:  # noqa: BLE001
+        log.warning("sync list failed: %s", e)
+        return {"status": "error", "reason": str(e)[:200]}
     filings.sort(key=lambda f: f.get("submitted") or "")
     updated, skipped, errors = [], 0, 0
     for f in filings:
@@ -131,7 +135,12 @@ async def run_sync(days: int = 3, end: dt.date | None = None, max_docs: int = 15
             errors += 1
             log.warning("detail %s failed: %s", f["doc_id"], type(e).__name__)
             continue
-        key = merge_filing(ov, f["investor_id"], f, d)
+        try:
+            key = merge_filing(ov, f["investor_id"], f, d)
+        except Exception as e:  # noqa: BLE001
+            errors += 1
+            log.warning("merge %s failed: %s", f["doc_id"], e)
+            continue
         seen.add(f["doc_id"])
         if key:
             updated.append(key)
