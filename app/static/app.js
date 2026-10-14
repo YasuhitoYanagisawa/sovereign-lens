@@ -259,7 +259,7 @@ async function loadFunds() {
   $("#fundCards").innerHTML = groups.map(([c, title]) => `<h2 class="grouph">${title}</h2><div class="cards">${d.investors.filter((i) => i.category === c).map((i) => `<div class="panel ${c}"><h3>${esc(i.name_ja)}</h3>
     <div class="meta">${esc(i.country)} ・ ${esc(i.type)} ・ 開示：${esc(i.disclosure)}</div>
     <p>${esc(i.profile)}</p><p class="fine">追跡中の日本株：${i.japan_holdings_tracked}銘柄</p></div>`).join("")}</div>`).join("") +
-    `<p class="fine">ADIA・KIA・テマセク・中国系（CIC/SAFE）なども日本株を保有していますが、1社あたり5%未満のため大量保有報告書には出てきません。保有の全容を公開しているのはNBIMだけです（「NBIMライブ」タブ）。</p>`;
+    `<p class="fine">ADIA・KIA・テマセク・中国系（CIC/SAFE）なども日本株を保有していますが、1社あたり5%未満のため大量保有報告書には出てきません。保有の全容を公開しているのはNBIMだけです（「NBIMライブ」タブ）。</p><p class="fine"><b>GPIF（年金積立金管理運用独立行政法人）を入れていない理由</b>：国内株の大半をTOPIXなどに連動させるパッシブ運用で保有し、信託銀行・運用会社の名義で持つため大量保有報告書に出ず、「選んだ銘柄」の情報になりません。戦略のコア（国内株インデックス）が、GPIFやNBIMと同じ「市場全体に分散する」部分にあたります。</p>`;
 }
 
 /* ---------- NBIM live ---------- */
