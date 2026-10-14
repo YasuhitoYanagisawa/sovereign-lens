@@ -201,7 +201,7 @@ async def api_sync(request: Request, days: int = 3, end: Optional[str] = None, m
 
 
 @app.get("/api/backtest")
-async def api_backtest(request: Request, start: str, amount: int = 3_000_000, risk: str = "balanced", activists: bool = False):
+async def api_backtest(request: Request, start: str, amount: int = 3_000_000, risk: str = "balanced", activists: bool = False, exclude: str = ""):
     """過去のある日にこの戦略どおり買っていたら、今いくらか（決定論的・LLM不使用）。"""
     import datetime as _dt
 
@@ -217,7 +217,10 @@ async def api_backtest(request: Request, start: str, amount: int = 3_000_000, ri
     if risk not in ("conservative", "balanced", "aggressive") or not (100_000 <= amount <= 1_000_000_000):
         raise HTTPException(400, "invalid amount or risk")
     try:
-        res = await backtest.run(s, amount, risk, activists)
+        import re as _re
+
+        ex = tuple(sorted({c for c in _re.split(r"[\s,、]+", exclude.upper()) if _re.fullmatch(r"[0-9]{3}[0-9A-Z]", c)}))[:50]
+        res = await backtest.run(s, amount, risk, activists, ex)
     except RuntimeError as e:
         raise HTTPException(503, str(e))
     audit("backtest", start=start, amount=amount, risk=risk, plan=res["result"]["plan_return_pct"], topix=res["result"]["topix_return_pct"])

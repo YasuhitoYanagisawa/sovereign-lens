@@ -331,7 +331,7 @@ function btChart(series) {
 async function runBacktest() {
   const p = profile();
   $("#btOut").innerHTML = `<p class="muted"><span class="spinner"></span> 過去の株価を取得して試算中…（初回は20〜40秒）</p>`;
-  const qs = new URLSearchParams({ start: $("#btStart").value, amount: p.investable_jpy, risk: p.risk, activists: p.include_activists });
+  const qs = new URLSearchParams({ start: $("#btStart").value, amount: p.investable_jpy, risk: p.risk, activists: p.include_activists, exclude: p.exclude_codes.join(",") });
   const r = await fetch(`/api/backtest?${qs}`);
   if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch {} $("#btOut").innerHTML = `<p class="down">${esc(m)}</p>`; return; }
   const d = await r.json(), R = d.result;

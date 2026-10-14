@@ -130,8 +130,8 @@ def universe_as_of(start: dt.date, quotes: dict) -> list[dict]:
     return u
 
 
-async def run(start: dt.date, amount: int = 3_000_000, risk: str = "balanced", include_activists: bool = False) -> dict:
-    key = (start, amount, risk, include_activists)
+async def run(start: dt.date, amount: int = 3_000_000, risk: str = "balanced", include_activists: bool = False, exclude_codes: tuple[str, ...] = ()) -> dict:
+    key = (start, amount, risk, include_activists, tuple(sorted(exclude_codes)))
     hit = _result_cache.get(key)
     if hit and time.time() - hit[0] < 6 * 3600:
         return hit[1]
@@ -141,7 +141,7 @@ async def run(start: dt.date, amount: int = 3_000_000, risk: str = "balanced", i
         raise RuntimeError("株価履歴を取得できませんでした（時間をおいて再試行してください）")
     quotes = {c: _quote_at(h, start) for c, h in hist.items() if h}
     uni = universe_as_of(start, quotes)
-    plan = portfolio.build_strategy(uni, amount, risk=risk, horizon_years=10, include_activists=include_activists)
+    plan = portfolio.build_strategy(uni, amount, risk=risk, horizon_years=10, include_activists=include_activists, exclude_codes=list(exclude_codes))
 
     t_hist = hist[TOPIX_ETF]
     t0 = _adj_at(t_hist, start)
@@ -199,6 +199,7 @@ async def run(start: dt.date, amount: int = 3_000_000, risk: str = "balanced", i
         "amount_jpy": amount,
         "risk": risk,
         "include_activists": include_activists,
+        "exclude_codes": list(exclude_codes),
         "allocation": a,
         "result": {
             "plan_value_jpy": round(pv),
