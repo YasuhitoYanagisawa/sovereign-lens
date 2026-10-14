@@ -21,16 +21,92 @@ MOMENTUM_PTS = {"new": 15, "increased": 15, "holding": 10, "reduced": 3, "exited
 _STATUS_RANK = {"new": 4, "increased": 4, "holding": 3, "reduced": 1, "exited": 0}
 
 SCORE_GUIDE = [
-    {"key": "保有比率", "max": 30, "desc": "ファンドが発行済株式の何%を持っているか。10%で満点。比率が高いほど、本気度（確信度）が高いとみなす。"},
+    {"key": "保有比率", "max": 25, "desc": "ファンドが発行済株式の何%を持っているか。10%で満点。比率が高いほど本気度（確信度）が高い。"},
     {"key": "コンセンサス", "max": 20, "desc": "別々のファンドが同じ銘柄を持っているか。2グループで12点、3グループ以上で20点。"},
-    {"key": "保有期間", "max": 20, "desc": "初めて保有が確認されてからの年数。10年で満点。長く持ち続けている銘柄ほど高い。"},
-    {"key": "直近の売買", "max": 15, "desc": "最新の報告での動き。新規・買い増しは15点、保有継続は10点、一部売却は3点。"},
-    {"key": "取得コスト比", "max": 15, "desc": "現在の株価が、ファンドの推定取得単価と比べて高いか安いか。同じかそれより安ければ15点、1.2倍以内で10点、1.5倍以内で5点。単価が不明なら5点。"},
+    {"key": "保有期間", "max": 20, "desc": "初めて保有が確認されてからの年数。10年で満点。"},
+    {"key": "比率の推移", "max": 15, "desc": "保有比率が増えているか減っているか。新規・買い増しは12点、そのうち買い増し幅が3pt以上か過去最高の比率なら15点。保有継続は9点。売却中は、ピーク比で8割以上残っていれば5点、半分以上なら2点、半分を切ったら0点。"},
+    {"key": "取得コスト比", "max": 15, "desc": "現在の株価がファンドの推定取得単価と比べて高いか安いか。同じかそれより安ければ15点、1.2倍以内で10点、1.5倍以内で5点。不明なら5点。"},
+    {"key": "保有目的", "max": 5, "desc": "大量保有報告書の保有目的。重要提案行為等（経営への提案意思あり）は5点、経営関与は4点、純投資は3点、不明・その他は2点、政策投資・提携は1点。"},
 ]
 TIMING_GUIDE = (
     "買い時判定は「ファンドの推定取得単価との差」「52週高値からの下落率」「200日移動平均との乖離」「ファンドの直近の売買」の4つを合計した0〜100点。"
     "70点以上＝買い場候補、55点以上＝分割で買い、40点以上＝様子見（押し目待ち）、40点未満＝見送り。過去データからの目安で、将来の値動きは保証しない。"
 )
+
+
+_OVERLAY: dict = {}
+
+
+def set_overlay(ov: dict) -> None:
+    """Apply EDINET-synced positions (ratio, prior, 保有目的) on top of the curated seed."""
+    global _OVERLAY
+    _OVERLAY = ov or {}
+    load_seed.cache_clear()
+    _inv_index.cache_clear()
+
+
+def _status_from(ratio: float, prior: float | None) -> str:
+    if ratio <= 0:
+        return "exited"
+    if prior in (None, 0):
+        return "new"
+    if ratio > prior + 0.005:
+        return "increased"
+    if ratio < prior - 0.005:
+        return "reduced"
+    return "holding"
+
+
+def _apply_overlay(merged: dict) -> None:
+    pos = (_OVERLAY or {}).get("positions") or {}
+    if not pos:
+        return
+    idx = {(h["investor_id"], h["code"]): h for h in merged["holdings"]}
+    for p in pos.values():
+        k = (p.get("investor_id"), p.get("code"))
+        h = idx.get(k)
+        ratio = p.get("ownership_pct")
+        if ratio is None:
+            continue
+        status = _status_from(ratio, p.get("prior_pct"))
+        if ratio < 5 and status != "exited":
+            status = "reduced"
+        upd = {
+            "ownership_pct": ratio,
+            "latest_report": p.get("latest_report"),
+            "status": status,
+            "prior_pct": p.get("prior_pct"),
+            "purpose": p.get("purpose"),
+            "important_proposal": p.get("important_proposal"),
+            "purpose_class": p.get("purpose_class"),
+            "edinet_synced": True,
+        }
+        if h:
+            if (h.get("latest_report") or "") > (p.get("latest_report") or ""):
+                # seed is newer than the overlay: keep seed numbers, still take 保有目的
+                upd = {k2: upd[k2] for k2 in ("purpose", "important_proposal", "purpose_class", "edinet_synced")}
+            h.update({k2: v for k2, v in upd.items() if v is not None})
+            h["peak_pct"] = max(h.get("peak_pct") or 0, p.get("peak_pct") or 0, ratio) or None
+            if p.get("initial_pct") is not None and h.get("initial_pct") is None:
+                h["initial_pct"] = p["initial_pct"]
+            if not h.get("est_cost_jpy") and p.get("est_cost_jpy"):
+                h["est_cost_jpy"] = p["est_cost_jpy"]
+                h["cost_basis_note"] = "EDINET報告書の取得資金合計÷保有株数（自動取得）"
+            if p.get("pdf_url"):
+                h["sources"] = list(dict.fromkeys([p["pdf_url"], *h.get("sources", [])]))
+        elif ratio >= 5:
+            merged["holdings"].append(
+                {
+                    "investor_id": p["investor_id"], "entity": None, "code": p["code"],
+                    "name_ja": p.get("name_ja") or p["code"], "sector": "未分類", "size": "small",
+                    "ownership_pct": ratio, "peak_pct": p.get("peak_pct"), "initial_pct": p.get("initial_pct"),
+                    "est_cost_jpy": p.get("est_cost_jpy") if p["investor_id"] != "nbim" else None,
+                    "first_seen": p.get("first_seen"), "latest_report": p.get("latest_report"), "status": status,
+                    "prior_pct": p.get("prior_pct"), "purpose": p.get("purpose"), "important_proposal": p.get("important_proposal"),
+                    "purpose_class": p.get("purpose_class"), "history": "EDINETから自動取得した新規ポジション",
+                    "sources": [p["pdf_url"]] if p.get("pdf_url") else [], "confidence": "medium", "edinet_synced": True,
+                }
+            )
 
 
 @lru_cache(maxsize=1)
@@ -44,7 +120,10 @@ def load_seed() -> dict:
         merged["as_of"] = max(filter(None, [merged["as_of"], d.get("as_of")]))
         for i in d["investors"]:
             merged["investors"].append({**i, "category": i.get("category", "sovereign")})
-        merged["holdings"].extend(d["holdings"])
+        merged["holdings"].extend(json.loads(json.dumps(d["holdings"])))
+    _apply_overlay(merged)
+    if (_OVERLAY or {}).get("updated_at"):
+        merged["synced_at"] = _OVERLAY["updated_at"]
     return merged
 
 
@@ -140,9 +219,70 @@ def entry_timing(price: float | None, ref_cost: float | None, quote: dict | None
         pts += 10; reasons.append("ファンドが直近で買い増し（需給が良い）")
     elif momentum == "reduced":
         pts -= 10; reasons.append("ファンドが直近で一部売却（需給に注意）")
+    elif momentum == "heavy_selling":
+        pts -= 15; reasons.append("ファンドがピークの半分以下まで売却（強い売りシグナル）")
     pts = max(0, min(100, pts))
     label = "買い場候補" if pts >= 70 else "分割で買い" if pts >= 55 else "様子見（押し目待ち）" if pts >= 40 else "見送り推奨"
     return {"label": label, "score": pts, "reasons": reasons, "high52": hi, "low52": q.get("low52"), "ma200": ma}
+
+
+PURPOSE_PTS = {"重要提案行為等": 5, "経営関与": 4, "純投資": 3, "その他": 2, "不明": 2, "政策投資・提携": 1, "資金調達の引受け": 0}
+_PURPOSE_RANK = ["重要提案行為等", "経営関与", "純投資", "その他", "政策投資・提携", "不明", "資金調達の引受け"]
+
+
+def default_purpose(r: dict) -> str:
+    """Before an EDINET sync fills it, fall back to what the filer type almost always states."""
+    if r.get("purpose_class"):
+        return r["purpose_class"]
+    cat = category_of(r["investor_id"])
+    if cat == "financing":
+        return "資金調達の引受け"
+    if r.get("purpose"):
+        import re as _re
+        if _re.search("重要提案|提案|助言", r["purpose"]):
+            return "重要提案行為等"
+        return "純投資"
+    return "不明"
+
+
+def best_purpose(rows: list[dict]) -> str:
+    classes = [default_purpose(r) for r in rows] or ["不明"]
+    return min(classes, key=lambda c: _PURPOSE_RANK.index(c) if c in _PURPOSE_RANK else 99)
+
+
+def _initial_pct(r: dict) -> float | None:
+    if r.get("initial_pct") is not None:
+        return r["initial_pct"]
+    import re as _re
+    m = _re.search(r"([0-9]+\.[0-9]+)%で新規", r.get("history") or "")
+    return float(m.group(1)) if m else None
+
+
+def trend_of(r: dict) -> dict:
+    """比率の推移: build-up size, distance from peak, and heavy selling."""
+    st, pct, peak = r.get("status"), r.get("ownership_pct"), r.get("peak_pct")
+    init, prior = _initial_pct(r), r.get("prior_pct")
+    if pct is None:
+        return {"pts": MOMENTUM_PTS.get(st, 0), "text": STATUS_LABEL.get(st), "heavy_selling": False}
+    if st in ("new", "increased"):
+        gain = pct - init if init is not None else None
+        at_peak = peak is None or pct >= peak * 0.98
+        strong = (gain is not None and gain >= 3) or (at_peak and st == "increased")
+        txt = f"{init:.2f}%→{pct:.2f}%（+{gain:.1f}pt）に買い増し" if gain is not None and gain > 0 else (f"直前{prior:.2f}%→{pct:.2f}%に買い増し" if prior else (f"{pct:.2f}%まで買い増し" if st == "increased" else f"{pct:.2f}%で新規取得"))
+        if at_peak and st == "increased":
+            txt += "・過去最高の比率"
+        return {"pts": 15 if strong else 12, "text": txt, "heavy_selling": False}
+    if st == "holding":
+        return {"pts": 9, "text": f"{pct:.2f}%で保有継続", "heavy_selling": False}
+    if st == "reduced":
+        if peak:
+            keep = pct / peak
+            txt = f"ピーク{peak:.2f}%→{pct:.2f}%（-{peak - pct:.1f}pt）に売却"
+            if keep < 0.5:
+                return {"pts": 0, "text": txt + "・ピークの半分以下", "heavy_selling": True}
+            return {"pts": 5 if keep >= 0.8 else 2, "text": txt, "heavy_selling": False}
+        return {"pts": 3, "text": f"{pct:.2f}%に一部売却", "heavy_selling": False}
+    return {"pts": 0, "text": STATUS_LABEL.get(st), "heavy_selling": False}
 
 
 def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
@@ -166,10 +306,13 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
     ref_cost = ref["est_cost_jpy"] if ref else None
     ratio = round(price / ref_cost, 3) if (price and ref_cost) else None
 
-    conviction = min(max_pct or 0.5, 10) / 10 * 30
+    conviction = min(max_pct or 0.5, 10) / 10 * 25
     consensus = {0: 0, 1: 0, 2: 12}.get(len(groups), 20)
     duration = min(holding_years or 0, 10) / 10 * 20
-    momentum = MOMENTUM_PTS.get(momentum_status, 0)
+    trend = trend_of(best) if best else {"pts": 0, "text": None, "heavy_selling": False}
+    momentum = trend["pts"]
+    pclass = best_purpose(active)
+    purpose_pts = PURPOSE_PTS.get(pclass, 2)
     if ratio is None:
         value = 5
     elif ratio <= 1.0:
@@ -180,7 +323,7 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
         value = 5
     else:
         value = 0
-    total = conviction + consensus + duration + momentum + value
+    total = conviction + consensus + duration + momentum + value + purpose_pts
     low_conf = all(r.get("confidence") == "low" for r in active) if active else True
     if low_conf:
         total *= 0.7
@@ -195,10 +338,10 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
         signals.append("政府系と物言う株主の両方が保有")
     if holding_years and holding_years >= 10:
         signals.append(f"{holding_years:.0f}年以上の長期保有")
-    if momentum_status in ("new", "increased"):
-        signals.append(f"直近の動き：{STATUS_LABEL[momentum_status]}")
-    if momentum_status == "reduced":
-        signals.append("直近の動き：一部売却（注意）")
+    if trend.get("text"):
+        signals.append(("⚠ " if trend.get("heavy_selling") else "") + "比率の推移：" + trend["text"])
+    if pclass not in ("不明",):
+        signals.append(f"保有目的：{pclass}")
     if ratio is not None:
         diff = (ratio - 1) * 100
         signals.append(f"現在値はファンドの推定取得単価より{abs(diff):.0f}%{'高い' if diff >= 0 else '安い'}")
@@ -230,6 +373,13 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
                 "status": r.get("status"),
                 "status_label": STATUS_LABEL.get(r.get("status"), r.get("status")),
                 "history": r.get("history"),
+                "peak_pct": r.get("peak_pct"),
+                "prior_pct": r.get("prior_pct"),
+                "trend": trend_of(r)["text"],
+                "purpose": r.get("purpose"),
+                "purpose_class": r.get("purpose_class") or default_purpose(r),
+                "important_proposal": r.get("important_proposal"),
+                "edinet_synced": bool(r.get("edinet_synced")),
                 "confidence": r.get("confidence"),
                 "sources": r.get("sources", []),
             }
@@ -249,10 +399,14 @@ def score_stock(rows: list[dict], quote, today: dt.date) -> dict:
             "保有比率": round(conviction, 1),
             "コンセンサス": consensus,
             "保有期間": round(duration, 1),
-            "直近の売買": momentum,
+            "比率の推移": momentum,
             "取得コスト比": value,
+            "保有目的": purpose_pts,
         },
-        "timing": entry_timing(price, ref_cost, q, momentum_status),
+        "trend": trend.get("text"),
+        "heavy_selling": trend.get("heavy_selling", False),
+        "purpose_class": pclass,
+        "timing": entry_timing(price, ref_cost, q, "heavy_selling" if trend.get("heavy_selling") else momentum_status),
         "signals": signals,
     }
 

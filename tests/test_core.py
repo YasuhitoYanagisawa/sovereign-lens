@@ -70,23 +70,74 @@ def test_normal_text_allowed():
     assert screen_text("PIFがカプコンを買った理由を教えて")[0] is True
 
 
-def test_edinet_csv_parser():
-    rows = [
-        ["要素ID", "項目名", "コンテキストID", "値"],
-        ["jplvh_cor:IssuerName", "発行者の名称", "x", "任天堂株式会社"],
-        ["jplvh_cor:SecurityCode", "証券コード", "x", "7974"],
-        ["jplvh_cor:HoldingRatio", "株券等保有割合", "x", "0.0858"],
-        ["jplvh_cor:Shares", "保有株券等の数（総数）", "x", "97307900"],
-        ["jplvh_cor:TotalFunds", "取得資金合計", "x", "586290000000"],
-    ]
+def _zip(rows):
     tsv = "\n".join("\t".join(r) for r in rows).encode("utf-16")
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as z:
         z.writestr("XBRL_TO_CSV/jplvh.csv", tsv)
-    d = edinet.parse_large_holding_csv(buf.getvalue())
-    assert d["sec_code"] == "7974"
-    assert d["holding_ratio_pct"] == 8.58
-    assert d["est_cost_jpy"] == 6025
+    return buf.getvalue()
+
+
+def test_edinet_csv_parser_real_format():
+    # element ids / contexts as observed in a real filing (S100YR7O, ヤマダHD by シティインデックスイレブンス)
+    rows = [
+        ["要素ID", "項目名", "コンテキストID", "相対年度", "連結・個別", "期間・時点", "ユニットID", "単位", "値"],
+        ["jplvh_cor:DocumentTitleCoverPage", "", "FilingDateInstant", "", "", "", "", "", "大量保有報告書"],
+        ["jplvh_cor:NameOfIssuer", "", "FilingDateInstant", "", "", "", "", "", "株式会社ヤマダホールディングス"],
+        ["jplvh_cor:SecurityCodeOfIssuer", "", "FilingDateInstant", "", "", "", "", "", "9831"],
+        ["jplvh_cor:TotalAmountOfFundingForAcquisition", "", "FilingDateInstant_jplvh010000-lvh_E1", "", "", "", "", "", "18899699000"],
+        ["jplvh_cor:TotalAmountOfFundingForAcquisition", "", "FilingDateInstant_jplvh010000-lvh_E2", "", "", "", "", "", "10941955000"],
+        ["jplvh_cor:PurposeOfHolding", "", "FilingDateInstant_jplvh010000-lvh_E1", "", "", "", "", "", "株主価値向上に資する、資本政策及びコーポレートガバナンス等に関する助言及び提案"],
+        ["jplvh_cor:ActOfMakingImportantProposalEtc", "", "FilingDateInstant_jplvh010000-lvh_E1", "", "", "", "", "", "該当なし"],
+        ["jplvh_cor:TotalNumberOfStocksEtcHeld", "", "FilingDateInstant", "", "", "", "", "", "49343900"],
+        ["jplvh_cor:HoldingRatioOfShareCertificatesEtc", "", "FilingDateInstant", "", "", "", "", "", "0.0510"],
+        ["jplvh_cor:HoldingRatioOfShareCertificatesEtcPerLastReport", "", "FilingDateInstant", "", "", "", "", "", "－"],
+    ]
+    d = edinet.parse_large_holding_csv(_zip(rows))
+    assert d["sec_code"] == "9831" and d["issuer_name"].endswith("ヤマダホールディングス")
+    assert d["holding_ratio_pct"] == 5.1 and d["prior_ratio_pct"] is None
+    assert d["total_funds_jpy"] == 18899699000 + 10941955000
+    assert d["est_cost_jpy"] == round((18899699000 + 10941955000) / 49343900)
+    assert d["purpose_class"] == "重要提案行為等"
+
+
+def test_classify_purpose():
+    assert edinet.classify_purpose("純投資", "該当なし") == "純投資"
+    assert edinet.classify_purpose("投資及び状況に応じて経営陣への助言、重要提案行為等を行うこと", None) == "重要提案行為等"
+    assert edinet.classify_purpose("純投資。重要提案行為等を行う予定はない", None) == "純投資"
+    assert edinet.classify_purpose("業務提携関係の強化のための政策投資", None) == "政策投資・提携"
+    assert edinet.classify_purpose("純投資", "取締役の選任に関する株主提案を行う") == "重要提案行為等"
+
+
+def test_trend_scoring():
+    up = analytics.trend_of({"status": "increased", "ownership_pct": 9.78, "peak_pct": 9.78, "history": "2026/5に5.11%で新規、7月に9.78%。"})
+    assert up["pts"] == 15 and "+4.7pt" in up["text"]
+    dump = analytics.trend_of({"status": "reduced", "ownership_pct": 7.6, "peak_pct": 43.36})
+    assert dump["pts"] == 0 and dump["heavy_selling"]
+    mild = analytics.trend_of({"status": "reduced", "ownership_pct": 5.96, "peak_pct": 8.02})
+    assert mild["pts"] == 2 and not mild["heavy_selling"]
+    u = {s["code"]: s for s in analytics.universe(PX)}
+    assert u["1822"]["heavy_selling"]  # 大豊建設: 村上系 43%→7.6%
+
+
+def test_overlay_updates_ratio_and_purpose(tmp_path, monkeypatch):
+    from app import sync
+    monkeypatch.setattr(sync, "LOCAL_PATH", tmp_path / "ov.json")
+    ov = {"positions": {}, "docs_seen": []}
+    f = {"doc_id": "S100TEST", "submitted": "2026-10-14 09:00", "pdf_url": "https://example/x.pdf"}
+    d = {"sec_code": "9831", "issuer_name": "ヤマダ", "holding_ratio_pct": 11.2, "prior_ratio_pct": 8.36,
+         "purpose": "助言及び提案", "important_proposal": None, "purpose_class": "重要提案行為等", "est_cost_jpy": 640}
+    assert sync.merge_filing(ov, "murakami", f, d) == "murakami|9831"
+    # brand-new position not in the seed
+    d2 = {**d, "sec_code": "1234", "issuer_name": "テスト工業", "holding_ratio_pct": 5.3, "prior_ratio_pct": None, "purpose_class": "純投資"}
+    sync.merge_filing(ov, "oasis", {**f, "doc_id": "S100TES2"}, d2)
+    analytics.set_overlay(ov)
+    try:
+        h = next(r for r in analytics.holdings(code="9831") if r["investor_id"] == "murakami")
+        assert h["ownership_pct"] == 11.2 and h["status"] == "increased" and h["purpose_class"] == "重要提案行為等"
+        assert any(r["code"] == "1234" and r["status"] == "new" for r in analytics.holdings(investor_id="oasis"))
+    finally:
+        analytics.set_overlay({})
 
 
 def test_nbim_parser():

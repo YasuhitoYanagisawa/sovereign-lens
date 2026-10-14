@@ -25,6 +25,9 @@ const timingBadge = (t) => {
   const cls = t.score >= 70 ? "buy" : t.score >= 55 ? "split" : t.score >= 40 ? "wait" : "avoid";
   return `<span class="tbadge ${cls}" title="${esc((t.reasons || []).join(" / "))}">${esc(t.label)} ${t.score}</span>`;
 };
+const PURPOSE_CLS = { "重要提案行為等": "act", "経営関与": "act", "純投資": "inv", "政策投資・提携": "pol", "資金調達の引受け": "fin" };
+const purposeChip = (p) => (p ? `<span class="purpose ${PURPOSE_CLS[p] || ""}">${esc(p)}</span>` : "");
+const trendCell = (t, heavy) => (t ? `<small class="${heavy ? "down" : "muted"}">${heavy ? "⚠ " : ""}${esc(t)}</small>` : "");
 const catChips = (cats) => (cats || []).map((c) => `<span class="cat ${c}">${CAT_JA[c] || c}</span>`).join("");
 
 /* ---------- tabs ---------- */
@@ -113,10 +116,10 @@ function renderPlan(plan, source) {
   const rows = plan.positions.map((p) => `<tr>
       <td class="name"><b>${esc(p.name)}</b><small>${esc(p.code)}・${esc(p.sector)}</small></td>
       <td>${p.followed_investors.map((f) => `<span class="fund">${esc(f)}</span>`).join("")}</td>
-      <td class="num">${p.score}</td><td class="num">${pct(p.weight_pct, 1)}</td><td class="num">${yen(p.amount_jpy)}</td>
+      <td class="num">${p.score}</td><td>${purposeChip(p.purpose_class)}<br>${trendCell(p.trend)}</td><td class="num">${pct(p.weight_pct, 1)}</td><td class="num">${yen(p.amount_jpy)}</td>
       <td class="num">${p.price_jpy ? yen(p.price_jpy) : "—"}</td><td>${timingBadge({ label: p.timing, score: p.timing_score })}</td><td>${esc(p.order_method)}<br><small class="muted">${esc(p.entry_plan)}</small></td></tr>`).join("");
-  $("#posTable").innerHTML = `<thead><tr><th>銘柄</th><th>追随するファンド</th><th>スコア</th><th>比率</th><th>金額(円)</th><th>株価</th><th>買い時</th><th>買い方</th></tr></thead>
-    <tbody><tr><td class="name"><b>コア：国内株インデックス</b><small>${esc(plan.core.name)}</small></td><td><span class="fund">NBIMの分散投資を再現</span></td><td></td>
+  $("#posTable").innerHTML = `<thead><tr><th>銘柄</th><th>追随するファンド</th><th>スコア</th><th>保有目的・比率の推移</th><th>比率</th><th>金額(円)</th><th>株価</th><th>買い時</th><th>買い方</th></tr></thead>
+    <tbody><tr><td class="name"><b>コア：国内株インデックス</b><small>${esc(plan.core.name)}</small></td><td><span class="fund">NBIMの分散投資を再現</span></td><td></td><td></td>
     <td class="num">${pct(a.core_pct, 1)}</td><td class="num">${yen(a.core_index_jpy)}</td><td></td><td></td><td><small class="muted">${esc(plan.core.why)}</small></td></tr>${rows}</tbody>`;
   $("#checks").innerHTML = plan.compliance_checks.map((c) => `<li class="${c.passed ? "ok" : "ng"}">${esc(c.rule)}（${esc(c.limit)}）</li>`).join("");
   $("#warns").innerHTML = plan.warnings.map((w) => `<li>⚠ ${esc(w)}</li>`).join("");
@@ -200,16 +203,16 @@ function renderGuide() {
 }
 function renderUniverse() {
   const rows = universe.filter((s) => catFilter === "all" || (s.categories || []).includes(catFilter));
-  $("#uniTable").innerHTML = `<thead><tr><th>スコア</th><th>銘柄</th><th>区分</th><th>保有ファンド</th><th>最大保有比率</th><th>推定取得単価</th><th>現在値</th><th>買い時</th><th>保有年数</th><th>直近</th></tr></thead><tbody>${rows
+  $("#uniTable").innerHTML = `<thead><tr><th>スコア</th><th>銘柄</th><th>区分</th><th>保有ファンド</th><th>最大保有比率</th><th>保有目的</th><th>推定取得単価</th><th>現在値</th><th>買い時</th><th>保有年数</th><th>比率の推移</th></tr></thead><tbody>${rows
     .map((s) => {
       const mom = { new: "新規", increased: "買増", holding: "継続", reduced: "一部売却", exited: "対象外" }[s.momentum] || s.momentum;
       return `<tr data-code="${esc(s.code)}" ${s.candidate ? "" : 'class="dim"'}>
         <td><div class="scorebar"><span style="width:${s.score * 0.6}px"></span><b class="num">${s.score}</b></div></td>
         <td class="name"><b>${esc(s.name_ja)}</b><small>${esc(s.code)}・${esc(s.sector)}</small>${s.warning ? '<small class="down">⚠ 警告：買わない方がよい</small>' : ""}</td>
         <td>${catChips(s.categories)}</td>
-        <td>${fundChips(s)}</td><td class="num">${pct(s.max_ownership_pct)}</td><td class="num">${yen(s.ref_cost_jpy)}</td>
+        <td>${fundChips(s)}</td><td class="num">${pct(s.max_ownership_pct)}</td><td>${purposeChip(s.purpose_class)}</td><td class="num">${yen(s.ref_cost_jpy)}</td>
         <td class="num">${yen(s.price_jpy)}</td><td>${timingBadge(s.timing)}</td>
-        <td class="num">${s.holding_years ?? "—"}</td><td>${esc(mom)}</td></tr>`;
+        <td class="num">${s.holding_years ?? "—"}</td><td>${esc(mom)}<br>${trendCell(s.trend, s.heavy_selling)}</td></tr>`;
     })
     .join("")}</tbody>`;
 }
@@ -228,8 +231,9 @@ function openDossier(code) {
   if (!s) return;
   const holders = s.holders.map((h) => `<tr><td>${esc(h.investor_name)}<br><small class="muted">${esc(h.entity || "")}</small></td>
     <td class="num">${pct(h.ownership_pct)}</td><td class="num">${yen(h.est_cost_jpy)}</td><td>${esc(h.first_seen || "—")}<br><small class="muted">最新 ${esc(h.latest_report || "—")}</small></td>
-    <td>${esc(h.status_label)}</td></tr>
-    <tr><td colspan="5"><small>${esc(h.history || "")}${h.cost_basis_note ? "<br>取得単価の根拠：" + esc(h.cost_basis_note) : ""}<br>${(h.sources || []).map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join(" ・ ")}</small></td></tr>`).join("");
+    <td>${esc(h.status_label)}${h.trend ? `<br><small class="muted">${esc(h.trend)}</small>` : ""}</td>
+    <td>${purposeChip(h.purpose_class)}${h.edinet_synced ? '<br><small class="muted">EDINET自動取得</small>' : ""}</td></tr>
+    <tr><td colspan="6"><small>${h.purpose ? "保有目的（原文）：" + esc(h.purpose) + "<br>" : ""}${h.important_proposal && !/^該当(なし|事項なし)$/.test(h.important_proposal) ? "重要提案行為等：" + esc(h.important_proposal) + "<br>" : ""}${esc(h.history || "")}${h.cost_basis_note ? "<br>取得単価の根拠：" + esc(h.cost_basis_note) : ""}<br>${(h.sources || []).map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join(" ・ ")}</small></td></tr>`).join("");
   $("#dossierBody").innerHTML = `<h2>${esc(s.name_ja)} <small>${esc(s.code)}・${esc(s.sector)}</small></h2>
     ${s.warning ? `<p class="warnbox">⚠ ${esc(s.warning)}</p>` : ""}
     <div class="dgrid">
@@ -238,7 +242,7 @@ function openDossier(code) {
         <p class="fine">52週高値 ${yen(s.timing?.high52)}円 ・ 安値 ${yen(s.timing?.low52)}円 ・ 200日平均 ${yen(s.timing?.ma200)}円</p></div>
     </div>
     <ul>${s.signals.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
-    <div class="tablewrap"><table class="grid"><thead><tr><th>ファンド</th><th>保有比率</th><th>推定取得単価</th><th>初回／最新報告</th><th>状態</th></tr></thead><tbody>${holders}</tbody></table></div>
+    <div class="tablewrap"><table class="grid"><thead><tr><th>ファンド</th><th>保有比率</th><th>推定取得単価</th><th>初回／最新報告</th><th>状態・推移</th><th>保有目的</th></tr></thead><tbody>${holders}</tbody></table></div>
     <p><button class="secondary" id="whyBtn">このファンドが買った理由をエージェントに調べさせる</button></p>`;
   $("#dossier").showModal();
   $("#whyBtn").onclick = () => {
@@ -289,14 +293,14 @@ $("#examples").addEventListener("click", (e) => { if (e.target.tagName === "BUTT
 (async () => {
   try {
     const h = await (await fetch("/api/health")).json();
-    $("#status").innerHTML = `Agent: ${esc(h.model)}<br>Reviewer: ${esc(h.reviewer || h.model)}<br>EDINET API: ${h.edinet ? "接続" : "シードデータ"}`;
+    $("#status").innerHTML = `Agent: ${esc(h.model)}<br>Reviewer: ${esc(h.reviewer || h.model)}<br>EDINET API: ${h.edinet ? "接続" : "シードデータ"}${h.edinet_synced_at ? `<br>最終同期: ${esc(new Date(h.edinet_synced_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }))}` : ""}`;
   } catch { $("#status").textContent = "API未接続"; }
   loadFunds();
   const loadUni = async (tries = 0) => {
     const u = await (await fetch("/api/universe")).json();
     universe = u.stocks;
     scoreGuide = u.score_guide || []; timingGuide = u.timing_guide || ""; renderGuide();
-    $("#asOf").textContent = u.prices_loading ? `データ基準日 ${u.as_of}・株価を取得中…` : `データ基準日 ${u.as_of}・株価は取得時点`;
+    $("#asOf").textContent = u.prices_loading ? `データ基準日 ${u.as_of}${u.synced_at ? "・EDINET同期 " + u.synced_at.slice(0, 10) : ""}・株価を取得中…` : `データ基準日 ${u.as_of}${u.synced_at ? "・EDINET同期 " + u.synced_at.slice(0, 10) : ""}・株価は取得時点`;
     renderUniverse();
     if (u.prices_loading && tries < 6) setTimeout(() => loadUni(tries + 1), 5000);
   };

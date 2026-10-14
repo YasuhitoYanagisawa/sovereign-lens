@@ -32,6 +32,9 @@ _refresh_task: asyncio.Task | None = None
 
 async def _refresh() -> list[dict]:
     global _universe_cache
+    from . import sync
+
+    await asyncio.to_thread(sync.refresh)  # pick up EDINET-synced ratios / 保有目的
     px = await prices.get_quotes(analytics.all_codes())
     u = analytics.universe(px)
     _universe_cache = (time.time(), u)
@@ -59,7 +62,7 @@ def prices_ready() -> bool:
 def _slim(s: dict) -> dict:
     return {
         k: s[k]
-        for k in ("code", "name_ja", "sector", "size", "categories", "score", "investor_groups", "max_ownership_pct", "holding_years", "momentum", "ref_cost_jpy", "price_jpy", "price_to_cost", "timing", "signals", "candidate", "warning")
+        for k in ("code", "name_ja", "sector", "size", "categories", "score", "investor_groups", "max_ownership_pct", "holding_years", "momentum", "trend", "heavy_selling", "purpose_class", "ref_cost_jpy", "price_jpy", "price_to_cost", "timing", "signals", "candidate", "warning")
     }
 
 
@@ -200,7 +203,7 @@ rationale_researcher = LlmAgent(
 
 plan_reviewer = LlmAgent(
     name="plan_reviewer",
-    model=GmiLlm(model=os.environ.get("GMI_MODEL", "deepseek-ai/DeepSeek-V4-Pro"), fallback_model=MODEL) if gmi_enabled() else MODEL,
+    model=GmiLlm(model=os.environ.get("GMI_MODEL", "deepseek-ai/DeepSeek-V4-Pro"), fallback_model=MODEL) if (gmi_enabled() and os.environ.get("REVIEWER_PROVIDER", "gemini") == "gmi") else MODEL,
     description="Independent risk & compliance reviewer. Input: the draft plan JSON and the user's profile. Returns issues to fix.",
     instruction="""あなたは独立したリスク・コンプライアンス審査役です。渡された投資プラン（JSON）を審査し、
 次の観点で問題点を日本語の箇条書きで返してください：
@@ -221,7 +224,7 @@ ORCHESTRATOR_INSTRUCTION = """あなたは「Sovereign Lens」。世界の政府
 3. plan_reviewer にプランの要点を渡して審査させる。「修正推奨」で具体的な除外コードがあれば exclude_codes を調整して build_investment_strategy を1回だけ作り直す（再審査はしない）
 4. 最終回答を次の構成のMarkdownで簡潔に書く（全体で1,500字程度）：
    ### 結論（3行）
-   ### 追随するファンドと銘柄（表：銘柄｜保有ファンド｜保有比率｜推定取得単価｜現在値｜買い時判定｜スコア）
+   ### 追随するファンドと銘柄（表：銘柄｜保有ファンド｜保有比率と推移｜保有目的｜推定取得単価｜現在値｜買い時判定｜スコア）
    ### 各銘柄を選んだ理由（ファンド側の推定理由＋出典）
    ### あなた向けの配分と買い方（コア／個別株／現金、株数、分割購入。買い時判定が「様子見」「見送り」の銘柄は待つよう明記）
    ### リスクと審査結果
@@ -231,6 +234,8 @@ ORCHESTRATOR_INSTRUCTION = """あなたは「Sovereign Lens」。世界の政府
 - 数値はツールの結果だけを使い、出典（EDINET報告書・NBIM公開データ等）を明記する
 - 推定取得単価は「取得資金÷保有株数による推定」であることを必ず書く
 - 買い時判定（timing）は過去データからの目安であり、将来の値動きの予測ではないと明記する
+- 判断には「比率の推移（trend：買い増し幅・ピークからの売却）」と「保有目的（purpose_class：重要提案行為等／純投資／政策投資など）」を必ず織り込み、各銘柄の説明で触れる。heavy_selling（ピークの半分以下まで売却）の銘柄は「ファンドが手仕舞い中」として買いを勧めない
+- 重要提案行為等は経営への提案・要求の意思表示で、株主還元強化などのイベントにつながりやすい一方、思惑で株価が先行していることもあると説明する
 - 物言う株主の銘柄は、増配・TOB・経営改革などのイベントを狙う短中期の投資で、政府系の長期保有とは性質が違うと説明する
 - 資金調達型（EVO FUND・マッコーリー・CVI・キャンター・ロング・コリドー）が保有する銘柄は「警告対象：買わない方がよい」と明確に伝える（希薄化・売り圧力）
 - 将来のリターンを約束しない。「必ず」「確実に」などの断定はしない

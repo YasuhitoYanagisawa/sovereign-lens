@@ -156,3 +156,9 @@ tr.dim{opacity:.55}
 .linkbtn{background:none;border:0;color:var(--warn);cursor:pointer;font:inherit;font-size:.8rem}
 .filelabel{display:inline-block;cursor:pointer}
 @media (max-width:900px){.dgrid{grid-template-columns:1fr}.mine-form{grid-template-columns:1fr 1fr}.mine-sum{grid-template-columns:1fr 1fr}}
+.purpose{display:inline-block;font-size:11px;padding:1px 6px;border-radius:9px;border:1px solid var(--line,#ccc);white-space:nowrap}
+.purpose.act{background:#fdecea;border-color:#e7a29b;color:#9b2c22}
+.purpose.inv{background:#eaf3ec;border-color:#9cc7a6;color:#22603a}
+.purpose.pol{background:#eef0f6;border-color:#a9b2cc;color:#3b4669}
+.purpose.fin{background:#fff3e0;border-color:#e6b46a;color:#8a5200}
+@media (prefers-color-scheme: dark){.purpose.act{background:#3a1f1c;color:#f2b8b0}.purpose.inv{background:#1c3324;color:#a8dcb6}.purpose.pol{background:#22283a;color:#bcc6e6}.purpose.fin{background:#3a2c14;color:#f0c98a}}

@@ -15,7 +15,8 @@ gcloud config set project "${PROJECT_ID}" >/dev/null
 
 echo "==> Enabling APIs (初回は数分かかります)"
 gcloud services enable run.googleapis.com aiplatform.googleapis.com cloudbuild.googleapis.com \
-  artifactregistry.googleapis.com cloudtrace.googleapis.com logging.googleapis.com secretmanager.googleapis.com
+  artifactregistry.googleapis.com cloudtrace.googleapis.com logging.googleapis.com secretmanager.googleapis.com \
+  storage.googleapis.com cloudscheduler.googleapis.com
 
 PROJECT_NUMBER="$(gcloud projects describe "${PROJECT_ID}" --format='value(projectNumber)')"
 COMPUTE_SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
@@ -31,6 +32,18 @@ for role in roles/run.builder roles/artifactregistry.writer roles/logging.logWri
   gcloud projects add-iam-policy-binding "${PROJECT_ID}" --member="serviceAccount:${COMPUTE_SA}" --role="${role}" --condition=None >/dev/null || true
 done
 
+echo "==> Cloud Storage bucket (EDINET同期データ)"
+BUCKET="${OVERLAY_BUCKET:-${PROJECT_ID}-sovereign-lens}"
+gcloud storage buckets describe "gs://${BUCKET}" >/dev/null 2>&1 || \
+  gcloud storage buckets create "gs://${BUCKET}" --location="${REGION}" --uniform-bucket-level-access
+gcloud storage buckets add-iam-policy-binding "gs://${BUCKET}" --member="serviceAccount:${SA}" \
+  --role=roles/storage.objectAdmin >/dev/null
+
+echo "==> Sync token (定期同期エンドポイント用)"
+if ! gcloud secrets describe sync-token >/dev/null 2>&1; then
+  openssl rand -hex 24 | tr -d '\n' | gcloud secrets create sync-token --data-file=- --replication-policy=automatic
+fi
+
 SECRET_FLAG=()
 if [[ -n "${EDINET_KEY}" ]]; then
   echo "==> Storing EDINET API key in Secret Manager"
@@ -44,6 +57,7 @@ fi
 SECRETS=()
 gcloud secrets describe edinet-api-key >/dev/null 2>&1 && SECRETS+=("EDINET_API_KEY=edinet-api-key:latest")
 gcloud secrets describe gmi-api-key >/dev/null 2>&1 && SECRETS+=("GMI_API_KEY=gmi-api-key:latest")
+SECRETS+=("SYNC_TOKEN=sync-token:latest")
 if [[ ${#SECRETS[@]} -gt 0 ]]; then
   SECRET_FLAG=(--update-secrets "$(IFS=,; echo "${SECRETS[*]}")")
 fi
@@ -56,10 +70,21 @@ gcloud run deploy "${SERVICE}" \
   --allow-unauthenticated \
   --memory 1Gi --cpu 1 --timeout 300 \
   --concurrency 20 --min-instances 0 --max-instances 3 \
-  --set-env-vars "GOOGLE_GENAI_USE_VERTEXAI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=global,ENABLE_CLOUD_TRACE=1,AGENT_RATE_LIMIT=8,MAX_TOOL_CALLS=30,GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.8-flash},GMI_MODEL=${GMI_MODEL:-deepseek-ai/DeepSeek-V4-Pro}" \
+  --set-env-vars "GOOGLE_GENAI_USE_VERTEXAI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=global,ENABLE_CLOUD_TRACE=1,AGENT_RATE_LIMIT=8,MAX_TOOL_CALLS=30,GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.8-flash},GMI_MODEL=${GMI_MODEL:-deepseek-ai/DeepSeek-V4-Pro},REVIEWER_PROVIDER=${REVIEWER_PROVIDER:-gemini},OVERLAY_BUCKET=${BUCKET}" \
   "${SECRET_FLAG[@]}"
 
 URL="$(gcloud run services describe "${SERVICE}" --region "${REGION}" --format='value(status.url)')"
+echo "==> Cloud Scheduler: 毎日 EDINET 大量保有報告を同期"
+TOKEN="$(gcloud secrets versions access latest --secret=sync-token)"
+JOB_ARGS=(--location "${REGION}" --schedule "30 7,19 * * *" --time-zone "Asia/Tokyo"
+  --uri "${URL}/api/admin/sync?days=5" --http-method POST --attempt-deadline 300s)
+if gcloud scheduler jobs describe sovereign-lens-sync --location "${REGION}" >/dev/null 2>&1; then
+  gcloud scheduler jobs update http sovereign-lens-sync "${JOB_ARGS[@]}" --update-headers "X-Sync-Token=${TOKEN}" >/dev/null
+else
+  gcloud scheduler jobs create http sovereign-lens-sync "${JOB_ARGS[@]}" --headers "X-Sync-Token=${TOKEN}" >/dev/null
+fi
+unset TOKEN
+
 echo
 echo "✅ Deployed: ${URL}"
 echo "   ヘルスチェック: curl ${URL}/api/health"

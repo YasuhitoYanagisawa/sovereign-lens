@@ -22,7 +22,7 @@ small{color:#6b6f76}
 
 <div class="box" style="left:36px;top:130px;width:190px;height:150px"><h3>利用者</h3>ブラウザ（PC/スマホ）<br>金額・リスク・期間を入力<br><small>プランを確認・承認し、発注は自分の証券口座で</small></div>
 
-<div class="gcp" style="left:262px;top:110px;width:1010px;height:760px"><span>Google Cloud（asia-northeast1）</span></div>
+<div class="gcp" style="left:262px;top:110px;width:1010px;height:770px"><span>Google Cloud（asia-northeast1）</span></div>
 
 <div class="box" style="left:290px;top:135px;width:300px;height:170px"><h3>Cloud Run：FastAPI</h3>
 <span class="pill">Web UI（静的）</span><span class="pill">REST API</span><span class="pill">SSEストリーム</span><br>
@@ -35,28 +35,29 @@ small{color:#6b6f76}
 Gemini（Vertex AI）<br>収集→採点→理由調査→配分→審査を<b>自分で判断して</b>進め、審査で指摘があれば除外銘柄を調整して作り直す</div>
 
 <div class="box llm" style="left:975px;top:135px;width:270px;height:120px"><h3>理由調査エージェント</h3>Gemini + <b>Google検索グラウンディング</b><br>事実と推測を分け、出典を付けて要約</div>
-<div class="box llm" style="left:975px;top:275px;width:270px;height:110px"><h3>審査エージェント（独立）</h3>集中リスク・情報の鮮度・断定表現を審査し、承認可／修正推奨を返す</div>
+<div class="box llm" style="left:975px;top:268px;width:270px;height:122px"><h3>審査エージェント（独立）</h3>Gemini。集中リスク・鮮度・断定表現を審査<br><small>GMI Cloud：予備として組込済み（現在は未使用）</small></div>
 
 <div class="box agent" style="left:640px;top:370px;width:300px;height:250px"><h3>ツール群（Function Tools）</h3>
 <span class="pill">rank_swf_conviction_stocks</span><span class="pill">get_stock_dossier</span><span class="pill">get_investor_holdings</span><span class="pill">scan_new_swf_filings</span><span class="pill">get_nbim_live_japan_holdings</span><span class="pill">build_investment_strategy</span>
-<p style="margin:8px 0 0"><b>Sovereign Conviction Score</b><br>保有比率30＋複数ファンド20＋保有期間20＋直近売買15＋取得コスト比15</p></div>
+<p style="margin:8px 0 0"><b>Sovereign Conviction Score</b><br>保有比率25＋コンセンサス20＋保有期間20＋<b>比率の推移15</b>＋取得コスト比15＋<b>保有目的5</b></p></div>
 
 <div class="box" style="left:975px;top:410px;width:270px;height:210px"><h3>戦略エンジン（決定論的）</h3>コア（TOPIX）＋SWF追随の個別株＋現金<br>1銘柄・1業種の上限、現金の下限、規模フィルタを<b>コードで強制</b><br>単元株と単元未満株の自動判定、分割購入プラン</div>
 
-<div class="box" style="left:290px;top:560px;width:300px;height:150px"><h3>可観測性</h3>Cloud Trace（OpenTelemetry：エージェント・LLM・ツールのスパン）<br>Cloud Logging（監査ログ・トークン数）<br>UIのリアルタイムトレース表示</div>
+<div class="box" style="left:290px;top:545px;width:300px;height:140px"><h3>可観測性</h3>Cloud Trace（OpenTelemetry：エージェント・LLM・ツールのスパン）<br>Cloud Logging（監査ログ・トークン数）<br>UIのリアルタイムトレース表示</div>
 <div class="box" style="left:640px;top:650px;width:300px;height:100px"><h3>Secret Manager ／ IAM</h3>EDINET APIキーは Secret に保管<br>実行用サービスアカウントは最小権限</div>
-<div class="box" style="left:975px;top:650px;width:270px;height:115px"><h3>検証済みシードデータ</h3>政府系ファンド保有43件（出典URL付き）<br>APIが落ちても動作を継続</div>
+<div class="box" style="left:975px;top:645px;width:270px;height:128px"><h3>Cloud Storage</h3>EDINET同期データ（比率・ピーク・保有目的）を全インスタンスで共有<br><small>＋出典付きの検証済みシードデータ</small></div>
 
 <div class="box ext" style="left:1310px;top:135px;width:255px;height:115px"><h3>EDINET API v2（金融庁）</h3>大量保有報告書・変更報告書<br>（docType 350/360）のCSVから保有比率と取得資金を抽出</div>
 <div class="box ext" style="left:1310px;top:275px;width:255px;height:110px"><h3>NBIM 公開API</h3>ノルウェー政府年金基金の全保有銘柄（半期）。1998年からの履歴で保有期間を推定</div>
 <div class="box ext" style="left:1310px;top:410px;width:255px;height:85px"><h3>株価データ</h3>Yahoo Finance → Stooq（自動切替）</div>
 <div class="box ext" style="left:1310px;top:520px;width:255px;height:85px"><h3>Google 検索</h3>企業IR・報道・ファンドの年次報告</div>
 
+<div class="box agent" style="left:290px;top:705px;width:300px;height:150px"><h3>Cloud Scheduler（1日2回）</h3>EDINETの新しい大量保有報告書を自動取得<br>保有比率の推移・<b>保有目的</b>・重要提案行為等を解析し、スコアに即時反映<br><small>トークン認証付き /api/admin/sync</small></div>
 <svg viewBox="0 0 1600 900"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#55595f"/></marker></defs>
 <g stroke="#55595f" stroke-width="1.8" fill="none" marker-end="url(#a)">
 <path d="M226 205 H288"/><path d="M590 220 H638"/><path d="M440 305 V323"/>
 <path d="M940 190 H973"/><path d="M940 300 H973"/><path d="M790 340 V368"/>
-<path d="M940 500 H973"/><path d="M940 397 H1282 V190 H1308"/><path d="M1282 330 H1308"/><path d="M1282 397 V455 H1308"/><path d="M1245 220 C1280 220 1280 560 1308 560"/>
-<path d="M590 450 C615 450 615 520 638 520" stroke-dasharray="5 4"/><path d="M640 600 C610 600 610 630 592 630" stroke-dasharray="5 4"/>
+<path d="M940 500 H973"/><path d="M940 400 H1282 V190 H1308"/><path d="M1282 330 H1308"/><path d="M1282 397 V455 H1308"/><path d="M1245 220 C1280 220 1280 560 1308 560"/>
+<path d="M590 790 H1110 V772" stroke-dasharray="5 4"/><path d="M590 450 C615 450 615 520 638 520" stroke-dasharray="5 4"/><path d="M640 600 C610 600 610 630 592 630" stroke-dasharray="5 4"/>
 </g></svg>
 </div></body></html>

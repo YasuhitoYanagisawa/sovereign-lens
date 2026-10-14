@@ -105,6 +105,16 @@ def _get_runner():
 
 
 @app.on_event("startup")
+async def _load_overlay() -> None:
+    from . import sync
+
+    try:
+        await asyncio.to_thread(sync.refresh, 0, True)
+    except Exception as e:  # noqa: BLE001
+        log.warning("overlay load failed: %s", e)
+
+
+@app.on_event("startup")
 async def _warm_model() -> None:
     """Resolve the model in the background so the first user request doesn't pay for the probe."""
     if os.environ.get("GOOGLE_GENAI_USE_VERTEXAI") or os.environ.get("GOOGLE_API_KEY"):
@@ -158,8 +168,33 @@ async def health():
         if m.last_provider.startswith("gemini:"):
             reviewer += f"（GMI応答なしのため {m.fallback_model} で代替中）"
     else:
-        reviewer = _model_ready or str(plan_reviewer.model)
-    return {"ok": True, "model": _model_ready or root_agent.model, "reviewer": reviewer, "edinet": bool(os.environ.get("EDINET_API_KEY"))}
+        reviewer = (_model_ready or str(plan_reviewer.model)) + ("（GMI Cloudは予備として組込済・現在は未使用）" if gmi_enabled() else "")
+    return {"ok": True, "model": _model_ready or root_agent.model, "reviewer": reviewer, "edinet": bool(os.environ.get("EDINET_API_KEY")),
+            "edinet_synced_at": analytics.load_seed().get("synced_at")}
+
+
+@app.post("/api/admin/sync")
+async def api_sync(request: Request, days: int = 3, end: Optional[str] = None, max_docs: int = 150):
+    """Daily EDINET sync (called by Cloud Scheduler). Protected by a shared token header."""
+    import datetime as _dt
+    import hmac
+
+    from . import sync
+
+    token = os.environ.get("SYNC_TOKEN")
+    given = request.headers.get("x-sync-token", "")
+    if not token or not hmac.compare_digest(token, given):
+        audit("sync_denied", severity="WARNING")
+        raise HTTPException(403, "forbidden")
+    days = max(1, min(days, 31))
+    end_d = _dt.date.fromisoformat(end) if end else None
+    res = await sync.run_sync(days=days, end=end_d, max_docs=max(1, min(max_docs, 300)))
+    from . import agent as _agent
+
+    if _agent._universe_cache:  # mark stale: next request rescores with the new filings
+        _agent._universe_cache = (0.0, _agent._universe_cache[1])
+    audit("sync_run", **{k: v for k, v in res.items() if k != "status"}, status=res.get("status"))
+    return res
 
 
 @app.get("/api/investors")
@@ -170,7 +205,7 @@ async def api_investors():
 @app.get("/api/universe")
 async def api_universe():
     stocks = await universe_with_prices(wait=False)
-    return {"as_of": analytics.load_seed()["as_of"], "prices_loading": not prices_ready(), "score_guide": analytics.SCORE_GUIDE, "timing_guide": analytics.TIMING_GUIDE, "stocks": stocks}
+    return {"as_of": analytics.load_seed()["as_of"], "synced_at": analytics.load_seed().get("synced_at"), "prices_loading": not prices_ready(), "score_guide": analytics.SCORE_GUIDE, "timing_guide": analytics.TIMING_GUIDE, "stocks": stocks}
 
 
 @app.get("/api/quotes")

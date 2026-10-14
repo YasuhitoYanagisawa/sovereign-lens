@@ -129,6 +129,7 @@ def build_strategy(
         s
         for s in universe
         if s["candidate"]
+        and not s.get("heavy_selling")
         and ("sovereign" in s.get("categories", ["sovereign"]) or (include_activists and "activist" in s.get("categories", [])))
         and s["code"].upper() not in exclude
         and s.get("size") in p.sizes
@@ -197,6 +198,8 @@ def build_strategy(
                 "order_method": method,
                 "entry_plan": entry,
                 "timing": (s.get("timing") or {}).get("label"),
+                "trend": s.get("trend"),
+                "purpose_class": s.get("purpose_class"),
                 "timing_score": (s.get("timing") or {}).get("score"),
                 "categories": s.get("categories", []),
                 "followed_investors": list(dict.fromkeys(h.get("investor_short", h["investor_name"]) for h in s["holders"] if h["status"] != "exited")),

@@ -19,19 +19,6 @@ log = logging.getLogger(__name__)
 API = "https://api.edinet-fsa.go.jp/api/v2"
 LARGE_HOLDING_DOC_TYPES = {"350", "360"}
 
-# Japanese item labels in the XBRL->CSV export we want to surface.
-_FIELDS = {
-    "issuer_name": ["発行者の名称"],
-    "sec_code": ["証券コード"],
-    "holding_ratio_pct": ["株券等保有割合"],
-    "prior_ratio_pct": ["直前の報告書に記載された株券等保有割合"],
-    "shares_held": ["保有株券等の数（総数）", "保有株券等の数"],
-    "total_funds_jpy": ["取得資金合計"],
-    "own_funds_jpy": ["自己資金額"],
-    "purpose": ["保有目的"],
-}
-
-
 def api_key() -> str | None:
     return os.environ.get("EDINET_API_KEY") or None
 
@@ -85,9 +72,45 @@ async def list_large_holding_filings(
     return found
 
 
+_NA = {"", "－", "―", "-", "該当なし", "該当事項なし", "なし"}
+
+
+def _num(v: str | None) -> float | None:
+    if v is None or v.strip() in _NA:
+        return None
+    try:
+        return float(re.sub(r"[^0-9.\-]", "", v) or "nan")
+    except ValueError:
+        return None
+
+
+def classify_purpose(purpose: str | None, proposal: str | None) -> str:
+    """Map 保有目的 / 重要提案行為等 free text to a coarse class."""
+    p = (purpose or "").replace(" ", "")
+    prop = (proposal or "").strip()
+    if prop and prop not in _NA:
+        return "重要提案行為等"
+    if re.search(r"重要提案|株主提案|助言|提案", p) and not re.search(r"(重要提案行為等?|提案)を行う(予定|意図|つもり)は(ない|ありません)", p):
+        return "重要提案行為等"
+    if re.search(r"支配|経営参加|子会社化|経営権", p):
+        return "経営関与"
+    if re.search(r"政策投資|業務提携|資本提携|取引関係|安定株主", p):
+        return "政策投資・提携"
+    if re.search(r"新株予約権|行使|引受", p):
+        return "資金調達の引受け"
+    if re.search(r"純投資|投資目的|ポートフォリオ|資産運用|割安", p):
+        return "純投資"
+    return "その他" if p else "不明"
+
+
 def parse_large_holding_csv(zip_bytes: bytes) -> dict:
-    """Extract key facts from the XBRL_TO_CSV export (UTF-16 TSV)."""
-    out: dict = {}
+    """Extract facts from the XBRL_TO_CSV export (UTF-16 TSV) by XBRL element id.
+
+    Context 'FilingDateInstant' carries the joint (共同保有合算) figures; contexts with a
+    suffix carry per-holder figures (funds, purpose).
+    """
+    joint: dict[str, str] = {}
+    per: dict[str, list[str]] = {}
     with zipfile.ZipFile(io.BytesIO(zip_bytes)) as z:
         for name in z.namelist():
             if not name.lower().endswith(".csv"):
@@ -102,28 +125,39 @@ def parse_large_holding_csv(zip_bytes: bytes) -> dict:
             else:
                 continue
             for row in csv.reader(io.StringIO(text), delimiter="\t"):
-                if len(row) < 3:
+                if len(row) < 4 or ":" not in row[0]:
                     continue
-                label, value = row[1], row[-1]
-                for field, labels in _FIELDS.items():
-                    if field in out:
-                        continue
-                    if any(label.strip() == l for l in labels):
-                        out[field] = value.strip()
-    for f in ("holding_ratio_pct", "prior_ratio_pct"):
-        if f in out:
-            try:
-                v = float(out[f])
-                out[f] = round(v * 100, 2) if v <= 1 else v
-            except ValueError:
-                pass
-    for f in ("shares_held", "total_funds_jpy", "own_funds_jpy"):
-        if f in out:
-            try:
-                out[f] = int(float(re.sub(r"[^\d.]", "", out[f]) or 0))
-            except ValueError:
-                pass
-    if out.get("shares_held") and out.get("total_funds_jpy"):
+                el, ctx, val = row[0].split(":", 1)[1], row[2], row[-1].strip()
+                if ctx == "FilingDateInstant":
+                    joint.setdefault(el, val)
+                per.setdefault(el, []).append(val)
+
+    def first(el: str) -> str | None:
+        for v in per.get(el, []):
+            if v not in _NA:
+                return v
+        return None
+
+    out: dict = {
+        "doc_title": joint.get("DocumentTitleCoverPage"),
+        "issuer_name": joint.get("NameOfIssuer") or first("NameOfIssuer"),
+        "sec_code": (joint.get("SecurityCodeOfIssuer") or first("SecurityCodeOfIssuer") or "").strip()[:4] or None,
+    }
+    ratio = _num(joint.get("HoldingRatioOfShareCertificatesEtc"))
+    prior = _num(joint.get("HoldingRatioOfShareCertificatesEtcPerLastReport"))
+    # the XBRL ratio is a fraction (0.0510); older/odd filings may already be a percentage
+    out["holding_ratio_pct"] = round(ratio * 100, 2) if ratio is not None and ratio <= 1 else ratio
+    out["prior_ratio_pct"] = round(prior * 100, 2) if prior is not None and prior <= 1 else prior
+    shares = _num(joint.get("TotalNumberOfStocksEtcHeld"))
+    out["shares_held"] = int(shares) if shares else None
+    funds = [f for f in (_num(v) for v in per.get("TotalAmountOfFundingForAcquisition", [])) if f]
+    out["total_funds_jpy"] = int(sum(funds)) if funds else None
+    purpose = first("PurposeOfHolding")
+    proposal = first("ActOfMakingImportantProposalEtc")
+    out["purpose"] = re.sub(r"\s+", " ", purpose)[:400] if purpose else None
+    out["important_proposal"] = re.sub(r"\s+", " ", proposal)[:300] if proposal else None
+    out["purpose_class"] = classify_purpose(purpose, proposal)
+    if out["shares_held"] and out["total_funds_jpy"]:
         out["est_cost_jpy"] = round(out["total_funds_jpy"] / out["shares_held"])
     return out
 
