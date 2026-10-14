@@ -237,6 +237,8 @@ def default_purpose(r: dict) -> str:
     cat = category_of(r["investor_id"])
     if cat == "financing":
         return "資金調達の引受け"
+    if cat == "sovereign" and not r.get("purpose"):
+        return "純投資"  # 政府系ファンドの報告書は実質すべて「純投資」
     if r.get("purpose"):
         import re as _re
         if _re.search("重要提案|提案|助言", r["purpose"]):
