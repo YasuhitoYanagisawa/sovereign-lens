@@ -307,6 +307,53 @@ $("#examples").addEventListener("click", (e) => { if (e.target.tagName === "BUTT
   loadUni();
 })();
 
+/* ---------- バックテスト ---------- */
+const isoDaysAgo = (y) => { const d = new Date(); d.setFullYear(d.getFullYear() - y); return d.toISOString().slice(0, 10); };
+$("#btStart").value = isoDaysAgo(1);
+$("#btPresets").addEventListener("click", (e) => { if (e.target.dataset.y) { $("#btStart").value = isoDaysAgo(Number(e.target.dataset.y)); runBacktest(); } });
+$("#btRun").addEventListener("click", () => runBacktest());
+function btChart(series) {
+  const W = 760, H = 240, P = 36;
+  const keys = [["plan", "var(--sat)", "この戦略"], ["same_mix_topix", "var(--core)", "同じ配分で個別株をTOPIXにした場合"], ["topix", "#9a9ea5", "全額TOPIX"]];
+  const vals = series.flatMap((s) => keys.map(([k]) => s[k]));
+  const lo = Math.min(...vals) * 0.98, hi = Math.max(...vals) * 1.02;
+  const x = (i) => P + (i / Math.max(series.length - 1, 1)) * (W - P - 8);
+  const y = (v) => H - 22 - ((v - lo) / (hi - lo)) * (H - 40);
+  const lines = keys.map(([k, c]) => `<polyline fill="none" stroke="${c}" stroke-width="${k === "plan" ? 2.6 : 1.6}" points="${series.map((s, i) => `${x(i).toFixed(1)},${y(s[k]).toFixed(1)}`).join(" ")}"/>`).join("");
+  const base = series.length ? y(series[0].plan) : 0;
+  return `<svg viewBox="0 0 ${W} ${H}" class="btchart" role="img" aria-label="評価額の推移">
+    <line x1="${P}" x2="${W - 8}" y1="${base}" y2="${base}" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="4 4"/>
+    ${lines}
+    <text x="${P}" y="${H - 4}" font-size="11" fill="currentColor" opacity=".6">${esc(series[0]?.date)}</text>
+    <text x="${W - 8}" y="${H - 4}" font-size="11" text-anchor="end" fill="currentColor" opacity=".6">${esc(series.at(-1)?.date)}</text>
+  </svg><div class="alloclegend">${keys.map(([, c, l]) => `<span><i style="background:${c}"></i>${l}</span>`).join("")}</div>`;
+}
+async function runBacktest() {
+  const p = profile();
+  $("#btOut").innerHTML = `<p class="muted"><span class="spinner"></span> 過去の株価を取得して試算中…（初回は20〜40秒）</p>`;
+  const qs = new URLSearchParams({ start: $("#btStart").value, amount: p.investable_jpy, risk: p.risk, activists: p.include_activists });
+  const r = await fetch(`/api/backtest?${qs}`);
+  if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch {} $("#btOut").innerHTML = `<p class="down">${esc(m)}</p>`; return; }
+  const d = await r.json(), R = d.result;
+  const sign = (v) => (v == null ? "—" : `${v >= 0 ? "+" : ""}${v}%`);
+  const cls = (v) => (v >= 0 ? "up" : "down");
+  $("#btOut").innerHTML = `<div class="mine-sum">
+      <div><span>${esc(d.start)} に ${yen(d.amount_jpy)}円</span><b class="num">→ ${yen(R.plan_value_jpy)}円</b></div>
+      <div><span>この戦略（${d.years}年）</span><b class="num ${cls(R.plan_return_pct)}">${sign(R.plan_return_pct)}</b></div>
+      <div><span>同じ配分・個別株をTOPIXに</span><b class="num">${sign(R.same_mix_topix_return_pct)}</b></div>
+      <div><span>全額TOPIX</span><b class="num">${sign(R.topix_return_pct)}</b></div>
+      <div><span>個別株部分だけ</span><b class="num ${cls(R.stock_sleeve_return_pct ?? 0)}">${sign(R.stock_sleeve_return_pct)}</b></div>
+      <div><span>最大下落（戦略／TOPIX）</span><b class="num">${R.plan_max_drawdown_pct}% ／ ${R.topix_max_drawdown_pct}%</b></div>
+    </div>
+    ${btChart(d.series)}
+    <p class="fine">配分：コア（TOPIX）${d.allocation.core_pct}%・個別株 ${d.allocation.satellite_pct}%・現金 ${d.allocation.cash_pct}%（開始日時点の候補 ${d.universe_size_at_start} 銘柄から選定）</p>
+    <div class="tablewrap"><table class="grid"><thead><tr><th>銘柄</th><th>追随したファンド</th><th>開始日のスコア</th><th>開始日の買い時判定</th><th>投資額</th><th>騰落率</th><th>損益</th></tr></thead><tbody>${d.positions.map((x) => `<tr>
+      <td class="name"><b>${esc(x.name)}</b><small>${esc(x.code)}・${esc(x.sector)}</small></td><td>${x.funds.map((f) => `<span class="fund">${esc(f)}</span>`).join("")}</td>
+      <td class="num">${x.score}</td><td>${esc(x.timing_at_start || "—")}</td><td class="num">${yen(x.amount_jpy)}</td>
+      <td class="num ${cls(x.return_pct)}">${sign(x.return_pct)}</td><td class="num ${cls(x.pnl_jpy)}">${x.pnl_jpy >= 0 ? "+" : ""}${yen(x.pnl_jpy)}</td></tr>`).join("")}</tbody></table></div>
+    <ul class="warns">${d.caveats.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>`;
+}
+
 /* ---------- 保有管理（このブラウザのlocalStorageのみ） ---------- */
 const MINE_KEY = "sovereign-lens-holdings-v1";
 let mine = [];

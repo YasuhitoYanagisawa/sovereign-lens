@@ -162,3 +162,5 @@ tr.dim{opacity:.55}
 .purpose.pol{background:#eef0f6;border-color:#a9b2cc;color:#3b4669}
 .purpose.fin{background:#fff3e0;border-color:#e6b46a;color:#8a5200}
 @media (prefers-color-scheme: dark){.purpose.act{background:#3a1f1c;color:#f2b8b0}.purpose.inv{background:#1c3324;color:#a8dcb6}.purpose.pol{background:#22283a;color:#bcc6e6}.purpose.fin{background:#3a2c14;color:#f0c98a}}
+.btchart{width:100%;height:auto;margin:12px 0 4px;color:var(--ink,#1c1f24)}
+#btPresets input{padding:4px 8px}

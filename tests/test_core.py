@@ -193,3 +193,33 @@ def test_evo_full_list_flagged():
     sanko = u["2762"]
     assert sanko["categories"] == ["financing"] and sanko["candidate"] is False and sanko["warning"]
     assert sum(1 for s in u.values() if "financing" in s["categories"]) >= 20
+
+
+def test_backtest_point_in_time(monkeypatch):
+    import asyncio
+    import datetime as dt
+
+    from app import backtest
+
+    start = dt.date(2025, 6, 2)
+    rows = backtest.rows_as_of(start)
+    assert rows and all(r["first_seen"][:10] <= start.isoformat() for r in rows)
+    assert all(r["latest_report"][:10] <= start.isoformat() for r in rows if r.get("latest_report"))
+
+    days = [start - dt.timedelta(days=400) + dt.timedelta(days=i) for i in range(700)]
+
+    async def fake(codes):
+        out = {}
+        for c in codes:
+            g = 1.0003 if c != backtest.TOPIX_ETF else 1.0001
+            out[c] = [(d, 1000 * g**i, 1000 * g**i) for i, d in enumerate(days)]
+        return out
+
+    monkeypatch.setattr(backtest, "histories", fake)
+    backtest._result_cache.clear()
+    res = asyncio.run(backtest.run(start, 3_000_000, "balanced"))
+    r = res["result"]
+    assert res["positions"], "plan should contain stocks"
+    assert r["plan_return_pct"] > r["topix_return_pct"] > 0  # stocks grew faster than TOPIX in the fake data
+    assert abs(sum(p["amount_jpy"] for p in res["positions"]) + res["allocation"]["core_index_jpy"]) <= 3_000_000
+    assert res["series"][-1]["date"] == res["end"]

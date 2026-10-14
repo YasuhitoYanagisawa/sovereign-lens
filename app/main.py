@@ -197,6 +197,30 @@ async def api_sync(request: Request, days: int = 3, end: Optional[str] = None, m
     return res
 
 
+@app.get("/api/backtest")
+async def api_backtest(request: Request, start: str, amount: int = 3_000_000, risk: str = "balanced", activists: bool = False):
+    """過去のある日にこの戦略どおり買っていたら、今いくらか（決定論的・LLM不使用）。"""
+    import datetime as _dt
+
+    from . import backtest
+
+    try:
+        s = _dt.date.fromisoformat(start)
+    except ValueError:
+        raise HTTPException(400, "start must be YYYY-MM-DD")
+    today = _dt.date.today()
+    if not (today - _dt.timedelta(days=365 * 4) <= s <= today - _dt.timedelta(days=30)):
+        raise HTTPException(400, "開始日は4年前〜30日前の範囲で指定してください")
+    if risk not in ("conservative", "balanced", "aggressive") or not (100_000 <= amount <= 1_000_000_000):
+        raise HTTPException(400, "invalid amount or risk")
+    try:
+        res = await backtest.run(s, amount, risk, activists)
+    except RuntimeError as e:
+        raise HTTPException(503, str(e))
+    audit("backtest", start=start, amount=amount, risk=risk, plan=res["result"]["plan_return_pct"], topix=res["result"]["topix_return_pct"])
+    return res
+
+
 @app.get("/api/investors")
 async def api_investors():
     return {"as_of": analytics.load_seed()["as_of"], "investors": analytics.investors()}

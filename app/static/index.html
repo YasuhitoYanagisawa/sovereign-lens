@@ -72,6 +72,7 @@
     <nav class="tabs" role="tablist">
       <button role="tab" class="on" data-tab="plan">戦略</button>
       <button role="tab" data-tab="stocks">ファンド保有銘柄</button>
+      <button role="tab" data-tab="bt">過去で検証</button>
       <button role="tab" data-tab="mine">保有管理</button>
       <button role="tab" data-tab="funds">追跡ファンド</button>
       <button role="tab" data-tab="nbim">NBIMライブ</button>
@@ -133,6 +134,21 @@
         </div>
         <p class="fine">推定取得単価＝大量保有報告書の「取得資金合計÷保有株数」（株式分割調整後）で、約定単価ではありません。行をクリックすると詳細が開きます。</p>
         <div class="tablewrap"><table class="grid hover" id="uniTable"></table></div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-bt">
+      <div class="panel">
+        <div class="plan-head"><h2>過去で検証（バックテスト）</h2></div>
+        <p class="fine">「この日に、左の条件（金額・リスク・物言う株主スイッチ）でこの戦略どおり買っていたら、今いくらか」を試算します。開始日時点で報告済みの保有だけを使い、同じ配分エンジンで銘柄と株数を決めます。LLMは使いません。</p>
+        <div class="chips" id="btPresets">
+          <button type="button" data-y="1">1年前から</button>
+          <button type="button" data-y="2">2年前から</button>
+          <button type="button" data-y="3">3年前から</button>
+          <input id="btStart" type="date">
+          <button type="button" class="primary" id="btRun">検証する</button>
+        </div>
+        <div id="btOut"></div>
       </div>
     </div>
 
