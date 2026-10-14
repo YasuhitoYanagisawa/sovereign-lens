@@ -168,3 +168,5 @@ tr.dim{opacity:.55}
 #uniTable td.name,#posTable td.name{min-width:11em}
 #uniTable td small,#posTable td small{white-space:normal}
 #uniTable td:last-child{min-width:9em}
+.layout>.content{min-width:0}
+.tablewrap{overflow-x:auto;max-width:100%}
