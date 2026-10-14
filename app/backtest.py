@@ -64,7 +64,7 @@ def _despike(rows: list[tuple[dt.date, float, float]]) -> list[tuple[dt.date, fl
     keep = []
     for i, r in enumerate(rows):
         if 0 < i < len(rows) - 1:
-            prev, nxt = rows[i - 1][2], rows[i + 1][2]
+            prev, nxt = keep[-1][2], rows[i + 1][2]
             up, down = r[2] / prev, r[2] / nxt
             if (up < 0.6 and down < 0.6) or (up > 1.6 and down > 1.6):
                 continue
