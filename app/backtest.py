@@ -53,8 +53,23 @@ async def _history(client: httpx.AsyncClient, code: str) -> list[tuple[dt.date, 
             ]
     except Exception as e:  # noqa: BLE001
         log.info("history %s failed: %s", code, type(e).__name__)
+    if out:
+        out = _despike(out)
     _hist_cache[code] = (time.time(), out)
     return out
+
+
+def _despike(rows: list[tuple[dt.date, float, float]]) -> list[tuple[dt.date, float, float]]:
+    """Drop one-day data glitches (e.g. a single bar at 1/10 of its neighbours)."""
+    keep = []
+    for i, r in enumerate(rows):
+        if 0 < i < len(rows) - 1:
+            prev, nxt = rows[i - 1][2], rows[i + 1][2]
+            up, down = r[2] / prev, r[2] / nxt
+            if (up < 0.6 and down < 0.6) or (up > 1.6 and down > 1.6):
+                continue
+        keep.append(r)
+    return keep
 
 
 async def histories(codes: list[str]) -> dict[str, list]:
