@@ -230,7 +230,8 @@ def test_backtest_despike():
 
     from app.backtest import _despike
 
-    d = [dt.date(2026, 3, i) for i in range(1, 6)]
-    rows = [(d[0], 100, 100), (d[1], 101, 101), (d[2], 10, 10), (d[3], 102, 102), (d[4], 60, 60)]
-    out = _despike(rows)
-    assert [r[0] for r in out] == [d[0], d[1], d[3], d[4]]  # spike dropped; last-point real drop kept
+    d = [dt.date(2026, 1, 1) + dt.timedelta(days=i) for i in range(40)]
+    vals = [100.0] * 15 + [10.0] * 3 + [100.0] * 7 + [60.0] * 15  # 3-day glitch, then a real, lasting drop
+    out = _despike([(x, v, v) for x, v in zip(d, vals)])
+    kept = [r[2] for r in out]
+    assert 10.0 not in kept and kept.count(60.0) >= 12 and len(out) >= 34

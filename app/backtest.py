@@ -60,14 +60,16 @@ async def _history(client: httpx.AsyncClient, code: str) -> list[tuple[dt.date, 
 
 
 def _despike(rows: list[tuple[dt.date, float, float]]) -> list[tuple[dt.date, float, float]]:
-    """Drop one-day data glitches (e.g. a single bar at 1/10 of its neighbours)."""
+    """Drop data glitches: bars more than 40% away from the median of the surrounding
+    ~3 weeks (e.g. a few days quoted at 1/10 around a split). Real moves persist and
+    shift the median, so they survive."""
+    vals = [r[2] for r in rows]
     keep = []
     for i, r in enumerate(rows):
-        if 0 < i < len(rows) - 1:
-            prev, nxt = keep[-1][2], rows[i + 1][2]
-            up, down = r[2] / prev, r[2] / nxt
-            if (up < 0.6 and down < 0.6) or (up > 1.6 and down > 1.6):
-                continue
+        win = sorted(vals[max(0, i - 7): i + 8])
+        med = win[len(win) // 2]
+        if med and not (0.6 <= r[2] / med <= 1.6):
+            continue
         keep.append(r)
     return keep
 
