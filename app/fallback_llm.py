@@ -20,7 +20,7 @@ from google.genai import types
 
 log = logging.getLogger(__name__)
 _RETRYABLE = ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE", "overloaded", "DEADLINE_EXCEEDED")
-FIRST_CHUNK_TIMEOUT = float(os.environ.get("FIRST_CHUNK_TIMEOUT", "15"))
+FIRST_CHUNK_TIMEOUT = float(os.environ.get("FIRST_CHUNK_TIMEOUT", "25"))
 _cooldown: dict[str, float] = {}  # model -> until (skip a model that just failed)
 
 
@@ -65,6 +65,9 @@ class FallbackGemini(BaseLlm):
                     yielded = True
                     yield first
                     async for resp in agen:
+                        fr = getattr(resp, "finish_reason", None)
+                        if fr and str(fr) not in ("FinishReason.STOP", "STOP"):
+                            log.warning("model %s finished with %s", m, fr)
                         yield resp
                 self.last_model = m
                 if i:
