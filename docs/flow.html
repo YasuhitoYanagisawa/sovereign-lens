@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>Sovereign Lens agent flow</title>
+<style>
+body{margin:0;background:#f6f3ec;font-family:"Noto Sans CJK JP","Noto Sans JP",sans-serif;color:#1c1f24}
+.c{width:1400px;height:820px;position:relative;box-sizing:border-box;padding:30px 40px}
+h1{font-family:"Noto Serif CJK JP",serif;font-size:28px;margin:0}
+.sub{color:#6b6f76;font-size:15px;margin:6px 0 0}
+.box{position:absolute;box-sizing:border-box;border-radius:12px;border:1.6px solid #cfc8b8;background:#fffdf8;padding:12px 16px;font-size:15px;line-height:1.5}
+.box h3{margin:0 0 4px;font-size:17px}
+.box small{color:#6b6f76;font-size:13px}
+.user{border-color:#9a9ea5}
+.orch{border-color:#0f5c56;background:#eef6f4}
+.step{border-color:#0f5c56;background:#fff}
+.llm{border-color:#b0862b;background:#fbf5e6}
+.gov{border-color:#a4471d;background:#fbefe9}
+.out{border-color:#0f5c56;background:#0f5c56;color:#fff}
+.out small{color:#d9ece8}
+.num{display:inline-block;width:24px;height:24px;border-radius:50%;background:#0f5c56;color:#fff;text-align:center;line-height:24px;font-size:13px;font-weight:700;margin-right:8px}
+.tool{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:#0f5c56;background:#eef6f4;border-radius:4px;padding:1px 6px}
+svg{position:absolute;inset:0;pointer-events:none}
+.lbl{position:absolute;font-size:13px;color:#a4471d;background:#f6f3ec;padding:0 6px;font-weight:700}
+</style></head><body><div class="c">
+<h1>エージェントの全体の流れ</h1>
+<p class="sub">オーケストレーターが状況を見て手順を進め、審査で指摘されれば自分で作り直す。数字はすべて決定論的なツールが計算する。</p>
+
+<div class="box user" style="left:40px;top:120px;width:250px;height:120px"><h3>利用者の条件</h3>金額・リスク・投資期間<br><small>例：300万円・バランス・10年</small></div>
+
+<div class="box orch" style="left:40px;top:300px;width:250px;height:200px"><h3>オーケストレーター</h3>Gemini 3.8 Flash<br><small>ADK LlmAgent</small><br><small>次に何をするかを自分で判断。<br>混雑時は 3.7 → 3.6 → 2.5 に自動切替</small></div>
+
+<div class="box step" style="left:390px;top:120px;width:560px;height:72px"><span class="num">1</span><b>候補を採点</b>　<span class="tool">rank_swf_conviction_stocks</span><br><small style="margin-left:32px">保有比率・重なり・保有期間・比率の推移・取得コスト・保有目的</small></div>
+<div class="box step" style="left:390px;top:210px;width:560px;height:72px"><span class="num">2</span><b>配分を計算</b>　<span class="tool">build_investment_strategy</span><br><small style="margin-left:32px">決定論的エンジン：株数・上限ルール・買い方</small></div>
+<div class="box step" style="left:390px;top:300px;width:560px;height:72px"><span class="num">3</span><b>上位銘柄の資料を確認</b>　<span class="tool">get_stock_dossier</span><br><small style="margin-left:32px">保有者・推定取得単価・保有目的の原文・出典</small></div>
+<div class="box llm" style="left:390px;top:390px;width:560px;height:72px"><span class="num">4</span><b>なぜ買ったかを調査</b>　理由調査エージェント<br><small style="margin-left:32px">Google検索グラウンディング。事実と推測を分けて出典付き</small></div>
+<div class="box llm" style="left:390px;top:480px;width:560px;height:72px"><span class="num">5</span><b>独立審査</b>　審査エージェント<br><small style="margin-left:32px">集中リスク・情報の鮮度・断定表現をチェック</small></div>
+
+<div class="box out" style="left:390px;top:620px;width:560px;height:90px"><h3 style="margin-bottom:2px">レポート＋配分案</h3><small>人が確認・承認し、自分の証券口座で発注（システムは発注しない）</small></div>
+
+<div class="box gov" style="left:1040px;top:120px;width:320px;height:400px"><h3>GovernancePlugin（ADK）</h3>
+すべてのツール呼び出しを検査<br><br>
+・ツールの許可リスト<br>
+・呼び出し回数の上限<br>
+　（審査2回・配分2回・調査3回）<br>
+・プロンプトインジェクション、<br>　発注・認証情報の要求をブロック<br>
+・構造化監査ログ（Cloud Logging）<br>
+・理由調査の12時間キャッシュ<br><br>
+<small>Cloud Trace で各ステップを可視化</small></div>
+
+<svg viewBox="0 0 1400 820"><defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0L10,5L0,10z" fill="#55595f"/></marker>
+<marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0L10,5L0,10z" fill="#a4471d"/></marker>
+</defs>
+<g stroke="#55595f" stroke-width="2" fill="none" marker-end="url(#a)">
+<path d="M165 240 V296"/>
+<path d="M290 400 H340" marker-end="none"/><path d="M340 156 V516" marker-end="none"/><path d="M340 156 H386"/>
+<path d="M340 246 H386"/><path d="M340 336 H386"/><path d="M340 426 H386"/><path d="M340 516 H386"/>
+<path d="M670 552 V616"/>
+</g>
+<path d="M950 516 H990 V246 H954" stroke="#a4471d" stroke-width="2.2" fill="none" stroke-dasharray="7 5" marker-end="url(#r)"/>
+<path d="M1040 336 H1000" stroke="#a4471d" stroke-width="1.6" fill="none" stroke-dasharray="3 4"/>
+</svg>
+<div class="lbl" style="left:900px;top:576px">指摘あり → 除外銘柄を変えて ② から作り直す</div>
+</div></body></html>

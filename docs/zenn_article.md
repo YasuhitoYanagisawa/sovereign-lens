@@ -89,19 +89,7 @@ published: true
 
 ### 全体の流れ
 
-```mermaid
-flowchart TD
-  U[利用者の条件<br>金額・リスク・期間] --> O[オーケストレーター<br>Gemini 3.8 Flash]
-  O -->|1 採点| T1[rank_swf_conviction_stocks]
-  O -->|2 配分| T2[build_investment_strategy<br>決定論的エンジン]
-  O -->|3 上位銘柄の資料| T3[get_stock_dossier]
-  O -->|4 なぜ買ったか| R[理由調査エージェント<br>Google検索グラウンディング]
-  O -->|5 審査| V[独立審査エージェント]
-  V -->|修正推奨| O
-  O -->|除外銘柄を変えて再計算| T2
-  O --> REP[レポート＋配分案<br>人が確認・承認]
-  P[[GovernancePlugin<br>許可リスト・回数上限・監査ログ・注入検知]] -.全ツール呼び出しを検査.- O
-```
+![](https://raw.githubusercontent.com/YasuhitoYanagisawa/sovereign-lens/main/docs/img/flow.png)
 
 ADK（Agent Development Kit）で、3つのエージェントを `AgentTool` でつないでいます。
 
